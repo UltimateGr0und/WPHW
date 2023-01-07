@@ -13,12 +13,12 @@ namespace WPHW1.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index()//этот метод связан с index.cshtml
         {
-            return View();
+            return View();//здесь мы возвращаем view, то есть саму cshtml разметку после всех действий.
         }
 
-        public IActionResult Privacy()
+        public IActionResult Privacy()//этот метод связан с privacy.cshtml
         {
             return View();
         }
