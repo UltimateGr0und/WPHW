@@ -9,11 +9,7 @@ namespace WPHW2.Controllers
     public class InfoController : Controller
     {
         // GET: Info
-        public ActionResult Index()
-        {
-            return View();
-        }
-        public string GetContext()
+        public string Index()
         {
             HttpContext.Response.Write("<h1>Welcome to HttpContext</h1>");
 
