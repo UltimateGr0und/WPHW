@@ -1,0 +1,21 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+@helper BookList(IEnumerable<string> films)
+{
+    <ul>
+        @foreach (string f in films)
+        {
+            <li>@f</li>
+        }
+    </ul>
+}
+
+<h2>Your account: @ViewBag.Name</h2>
+
+@BookList(new List<String>() {"Interstellar","Snatch","John Wick","Pulp fiction","Drive"})
+
+@Html.ActionLink("Log out", "Registration")
+

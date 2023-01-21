@@ -8,7 +8,6 @@ namespace WPHW3.Models
 {
     public class AccountDBContext:DbContext
     {
-        public AccountDBContext():base("DefaultConnection") { }
         public DbSet<Account> Accounts { get; set; }
     }
 }

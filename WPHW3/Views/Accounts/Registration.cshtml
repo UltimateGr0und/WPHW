@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Registration";
+}
+
+<h2>Registration</h2>
+
+<form action="Registration" method="post">
+    <input type="text" name="username" />
+    <input type="password" name="password" />
+    <input type="submit" name="submitButton" value="SignIn" />
+    <input type="submit" name="submitButton" value="SignUp" />
+</form>
+
+@*@Html.BeginForm("MyAction", "MyController", FormMethod.Post); 
+<input type="submit" name="submitButton" value="Send" />
+<input type="submit" name="submitButton" value="Cancel" />
+@Html.EndForm();*@
