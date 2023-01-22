@@ -19,7 +19,7 @@ namespace WPHW3.Controllers
             List<Account> accounts = db.Accounts.Where(
                 a => a.Sessions.Where(
                     s => s.Ip == HttpContext.Request.UserHostAddress).Any()).ToList();
-            if (accounts.Count == 1 && accounts.First().Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First().EndTime<DateTime.Now)
+            if (accounts.Count == 1 /*&& accounts.First().Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First().EndTime<DateTime.Now*/)
             {
                 ViewBag.Name = accounts.First().Name;
                 return View();
@@ -55,8 +55,9 @@ namespace WPHW3.Controllers
                 case "SignUp":
                     if (db.Accounts.Where(a => a.Name == username).Count() == 0)
                     {
-                        account.Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });
                         db.Accounts.Add(account);
+                        db.SaveChanges();
+                        db.Accounts.Where(a=>a.Id == account.Id).First().Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });        
                         db.SaveChanges();
                     }
                     break;
@@ -64,7 +65,9 @@ namespace WPHW3.Controllers
                     List<Account> currentAccounts = db.Accounts.Where(a => (a.Name == username && a.Password == password)).ToList();
                     if (currentAccounts.Count == 1)
                     {
-                        currentAccounts.First().Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });
+                        Session session = new Session() { Account = currentAccounts.First(), StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress };
+                        db.Sessions.Add(session);
+                        currentAccounts.First().Sessions.Add(session);
                         db.SaveChanges();
                     }
                     break;
