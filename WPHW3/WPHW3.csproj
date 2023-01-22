@@ -137,6 +137,7 @@
     <Compile Include="Models\AccountDBContext.cs" />
     <Compile Include="Models\AccountDbInitializer.cs" />
     <Compile Include="Models\Session.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

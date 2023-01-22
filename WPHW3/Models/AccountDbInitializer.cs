@@ -10,8 +10,12 @@ namespace WPHW3.Models
     {
         protected override void Seed(AccountDBContext context)
         {
+            User user = new User() { FullName="Admins name" };
             Account account = new Account() { Name = "admin", Password="admin",AccountType = AccountType.Admin };
+            user.Account = account;
+            account.User = user;
             context.Accounts.Add(account);
+            context.Users.Add(user);
             base.Seed(context);
         }
     }

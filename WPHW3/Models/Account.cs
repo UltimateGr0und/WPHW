@@ -12,6 +12,7 @@ namespace WPHW3.Models
         public string Password { get; set; }
         public ICollection<Session> Sessions { get; set; }
         public AccountType AccountType { get; set; }
+        public User User { get; set; }
         public Account() { Sessions = new List<Session>(); }
     }
     public enum AccountType
