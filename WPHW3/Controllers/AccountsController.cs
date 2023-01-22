@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
@@ -12,7 +13,7 @@ namespace WPHW3.Controllers
     {
         private AccountDBContext db = new AccountDBContext();
         // GET: Accounts
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             //List<Account> accounts = db.Accounts.Where(a => a.IsLocked == true).ToList();
             
@@ -42,12 +43,12 @@ namespace WPHW3.Controllers
             }
         }
 
-        public ActionResult Registration()
+        public async Task<ActionResult> Registration()
         {
             return View();
         }
         [HttpPost]
-        public ActionResult Registration(string username, string password, string submitButton)
+        public async Task<ActionResult> Registration(string username, string password, string submitButton)
         {
             Account account = new Account() { Name = username, Password = password };
             switch (submitButton)
@@ -55,9 +56,10 @@ namespace WPHW3.Controllers
                 case "SignUp":
                     if (db.Accounts.Where(a => a.Name == username).Count() == 0)
                     {
+                        Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1) };
+                        db.Sessions.Add(session);
+                        account.Sessions.Add(session);
                         db.Accounts.Add(account);
-                        db.SaveChanges();
-                        db.Accounts.Where(a=>a.Id == account.Id).First().Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });        
                         db.SaveChanges();
                     }
                     break;
@@ -73,6 +75,17 @@ namespace WPHW3.Controllers
                     break;
             }
             return RedirectToAction("Index");
+        }
+        public async Task<ActionResult> LogOut()
+        {            
+            Account account = db.Accounts.Where(
+                a => a.Sessions.Where(
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            foreach (var item in db.Sessions) { }
+            Session session = account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First();
+            account.Sessions.Remove(session);
+            db.SaveChanges();
+            return RedirectToAction("Registration");
         }
     }
 }
