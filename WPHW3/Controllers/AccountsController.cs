@@ -14,10 +14,15 @@ namespace WPHW3.Controllers
         // GET: Accounts
         public ActionResult Index()
         {
-            List<Account> accounts = db.Accounts.Where(a => a.IsLocked == true).ToList();
-            if (accounts.Count == 1)
+            //List<Account> accounts = db.Accounts.Where(a => a.IsLocked == true).ToList();
+            
+            List<Account> accounts = db.Accounts.Where(
+                a => a.Sessions.Where(
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).ToList();
+            if (accounts.Count == 1 && accounts.First().Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First().EndTime<DateTime.Now)
             {
                 ViewBag.Name = accounts.First().Name;
+                return View();
             }
             else if (accounts.Count == 0)
             {
@@ -25,10 +30,16 @@ namespace WPHW3.Controllers
             }
             else
             {
-                foreach (var account in db.Accounts) { account.IsLocked = false; }
+                foreach (var account in accounts)
+                {
+                    foreach (var session in account.Sessions)
+                    {
+                        db.Sessions.Remove(session);
+                    }
+                }
+                db.SaveChanges();
                 return RedirectToAction("Registration");
             }
-            return View();
         }
 
         public ActionResult Registration()
@@ -44,7 +55,7 @@ namespace WPHW3.Controllers
                 case "SignUp":
                     if (db.Accounts.Where(a => a.Name == username).Count() == 0)
                     {
-                        account.IsLocked = true;
+                        account.Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });
                         db.Accounts.Add(account);
                         db.SaveChanges();
                     }
@@ -53,7 +64,7 @@ namespace WPHW3.Controllers
                     List<Account> currentAccounts = db.Accounts.Where(a => (a.Name == username && a.Password == password)).ToList();
                     if (currentAccounts.Count == 1)
                     {
-                        currentAccounts.First().IsLocked = true;
+                        currentAccounts.First().Sessions.Add(new Session() { Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress });
                         db.SaveChanges();
                     }
                     break;

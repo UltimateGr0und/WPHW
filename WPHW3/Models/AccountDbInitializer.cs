@@ -10,7 +10,8 @@ namespace WPHW3.Models
     {
         protected override void Seed(AccountDBContext context)
         {
-            context.Accounts.Add(new Account() { Name="admin", Password="admin", IsLocked=true });
+            Account account = new Account() { Name = "admin", Password="admin" };
+            context.Accounts.Add(account);
             base.Seed(context);
         }
     }

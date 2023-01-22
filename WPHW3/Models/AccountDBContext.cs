@@ -9,5 +9,6 @@ namespace WPHW3.Models
     public class AccountDBContext:DbContext
     {
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Session> Sessions { get; set; }
     }
 }

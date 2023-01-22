@@ -10,6 +10,13 @@ namespace WPHW3.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public bool IsLocked { get; set; } = false;
+        public List<Session> Sessions { get; set; }
+        public AccountType AccountType { get; set; }
+    }
+    public enum AccountType
+    {
+        Admin,
+        Doctor,
+        Patient
     }
 }
