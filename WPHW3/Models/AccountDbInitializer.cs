@@ -12,10 +12,10 @@ namespace WPHW3.Models
         {
             User user = new User() { FullName="Admins name" };
             Account account = new Account() { Name = "admin", Password="admin",AccountType = AccountType.Admin };
-            user.Account = account;
-            account.User = user;
             context.Accounts.Add(account);
             context.Users.Add(user);
+            account.User = user;
+            context.SaveChanges();
             base.Seed(context);
         }
     }

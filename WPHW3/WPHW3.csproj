@@ -136,6 +136,8 @@
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountDBContext.cs" />
     <Compile Include="Models\AccountDbInitializer.cs" />
+    <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\Session.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -183,6 +185,9 @@
     <Content Include="Views\AccountsTable\Details.cshtml" />
     <Content Include="Views\AccountsTable\Edit.cshtml" />
     <Content Include="Views\AccountsTable\Index.cshtml" />
+    <Content Include="Views\Accounts\PatientMaster.cshtml" />
+    <Content Include="Views\Accounts\DoctorMaster.cshtml" />
+    <Content Include="Views\Accounts\AdminMaster.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

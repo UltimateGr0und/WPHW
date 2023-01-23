@@ -1,0 +1,35 @@
+﻿@model WPHW3.Models.User
+
+@{
+    ViewBag.Title = "AdminMaster";
+}
+
+<h2>Welcome @Model.FullName</h2>
+
+@Html.ActionLink("Log out", "LogOut")
+
+<form action="CreateDoctor" method="post">
+    <div>
+        <label>Login</label>
+        <input type="text" name="username" />
+    </div>
+    <div>
+        <label>Password</label>
+        <input type="password" name="password" />
+    </div>
+    <div>
+        <label>Fullname</label>
+        <input type="text" name="fullname" />
+    </div>
+    <div>
+        <label>Description</label>
+        <input type="text" name="description" />
+    </div>
+    <input type="submit" name="submitButton" value="Create" />
+</form>
+
+@foreach (var doctor in new WPHW3.Models.AccountDBContext().Doctors)
+{
+    <h4>@doctor.FullName</h4>
+    <p>@doctor.Description</p>
+}
