@@ -188,6 +188,7 @@
     <Content Include="Views\Accounts\PatientMaster.cshtml" />
     <Content Include="Views\Accounts\DoctorMaster.cshtml" />
     <Content Include="Views\Accounts\AdminMaster.cshtml" />
+    <Content Include="Views\Accounts\PatientAddDoctor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -4,5 +4,24 @@
     ViewBag.Title = "PatientMaster";
 }
 
-<h2>PatientMaster</h2>
+<h2>Welcome @Model.FullName</h2>
+@Html.ActionLink("Log out", "LogOut")
+@Html.ActionLink("Add doctor", "PatientAddDoctor")
 
+@if (Model.Doctors.Count > 0)
+{
+    <h3>Patients</h3>
+    <ul>
+        @foreach (var doctor in Model.Doctors)
+        {
+            <li>
+                <h4>@doctor.FullName</h4>
+                <p>@doctor.Description</p>
+            </li>        
+        }
+    </ul>
+}
+else
+{
+    <p>You havent got any doctors yet</p>
+}

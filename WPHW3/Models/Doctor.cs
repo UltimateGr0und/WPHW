@@ -8,6 +8,10 @@ namespace WPHW3.Models
     public class Doctor:User
     {
         public string Description { get; set; }
-        public ICollection<Patient> Patients { get; set; } = new List<Patient>();
+        public ICollection<Patient> Patients { get; set; }
+        public Doctor()
+        {
+            Patients = new List<Patient>();
+        }
     }
 }

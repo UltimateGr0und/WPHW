@@ -15,6 +15,15 @@ namespace WPHW3.Models
             context.Accounts.Add(account);
             context.Users.Add(user);
             account.User = user;
+            user.Account = account;
+
+            Account DoctorAccount = new Account() { Name = "doctor", Password = "doctor", AccountType = AccountType.Doctor };
+            Doctor doctor = new Doctor() { FullName = "DoctorsName", Description = "description" };
+            context.Accounts.Add(DoctorAccount);
+            context.Users.Add(user);
+            DoctorAccount.User = doctor;
+            doctor.Account = DoctorAccount;
+
             context.SaveChanges();
             base.Seed(context);
         }

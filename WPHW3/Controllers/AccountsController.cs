@@ -72,21 +72,56 @@ namespace WPHW3.Controllers
         }
         public async Task<ActionResult> PatientMaster()
         {
-            if (!CheckUser(AccountType.Patient)) { RedirectToAction("Index"); }
-            Patient patient = (Patient)RegistratedAccounts().First().User;
-
+            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
+            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
+            
+            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            foreach (var d in db.Doctors)
+            {
+                string temp = d.FullName;
+            }
             return View(patient);
+        }
+        public async Task<ActionResult> PatientAddDoctor()
+        {
+            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
+            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
+            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+
+            List<Doctor> awaibleDoctors = new List<Doctor>();
+            awaibleDoctors.AddRange(db.Doctors.Where(d=>!patient.Doctors.Contains(d)));
+
+            return View(awaibleDoctors);
+        }
+        public async Task<ActionResult> PatientDoAddDoctor(int Id)
+        {
+            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
+            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
+            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+
+            Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
+            patient.Doctors.Add(doctor);
+            doctor.Patients.Add(patient);
+
+            //db.Entry(doctor).State = System.Data.Entity.EntityState.Modified;
+            //db.Entry(patient).State = System.Data.Entity.EntityState.Modified;
+
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("PatientMaster");
         }
         public async Task<ActionResult> DoctorMaster()
         {
-            if (!CheckUser(AccountType.Doctor)) { RedirectToAction("Index"); }
-            Doctor doctor = (Doctor)RegistratedAccounts().First().User;
+            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
+            if (!CheckUser(AccountType.Doctor)) { return RedirectToAction("Index"); }
+            Doctor doctor = db.Doctors.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
 
             return View(doctor);
         }
         public async Task<ActionResult> AdminMaster()
         {
-            if (!CheckUser(AccountType.Admin)) { RedirectToAction("Index"); }
+            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
+            if (!CheckUser(AccountType.Admin)) { return RedirectToAction("Index"); }
             User admin = db.Users.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
 
             return View(admin);
@@ -94,14 +129,14 @@ namespace WPHW3.Controllers
         [HttpPost] 
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)
         {
+            if (db.Accounts.Where(a => a.Name == username).Count()!=0)
+            {
+                return RedirectToAction("AdminMaster");
+            }
             Doctor doctor = new Doctor() { FullName = fullname, Description = description };
             Account account = new Account() { AccountType= AccountType.Doctor, Name=username, Password=password };
-            Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1) };
-            db.Sessions.Add(session);
             db.Accounts.Add(account);
             db.Doctors.Add(doctor);
-            account.Sessions.Add(session);
-            session.Account = account;
             account.User = doctor;
             doctor.Account = account;
             db.SaveChanges();
@@ -126,10 +161,15 @@ namespace WPHW3.Controllers
                     if (db.Accounts.Where(a => a.Name == username).Count() == 0)
                     {
                         Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1) };
-                        db.Sessions.Add(session);
+                        Patient patient = new Patient() { FullName = username };
                         account.AccountType = AccountType.Patient;
+
+                        db.Patients.Add(patient);
+                        db.Sessions.Add(session);
                         db.Accounts.Add(account);
                         account.Sessions.Add(session);
+                        account.User = patient;
+                        patient.Account = account;
                         db.SaveChanges();
                     }
                     break;

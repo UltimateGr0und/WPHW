@@ -8,6 +8,7 @@
 
 @Html.ActionLink("Log out", "LogOut")
 
+<h3>Create new doctor</h3>
 <form action="CreateDoctor" method="post">
     <div>
         <label>Login</label>
@@ -28,6 +29,7 @@
     <input type="submit" name="submitButton" value="Create" />
 </form>
 
+<h3>Doctors</h3>
 @foreach (var doctor in new WPHW3.Models.AccountDBContext().Doctors)
 {
     <h4>@doctor.FullName</h4>
