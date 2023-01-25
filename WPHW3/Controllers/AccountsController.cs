@@ -13,6 +13,19 @@ namespace WPHW3.Controllers
     {
         private AccountDBContext db = new AccountDBContext();
         // GET: Accounts
+        private Account RegistratedAccount()
+        {
+            try
+            {
+                return db.Accounts.Where(
+                a => a.Sessions.Where(
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).Single();
+            }
+            catch (Exception)
+            {
+                return null;                
+            }
+        } 
         private List<Account> RegistratedAccounts()
         {
             return db.Accounts.Where(
@@ -30,14 +43,6 @@ namespace WPHW3.Controllers
                 }
             }
             db.SaveChanges();
-        }
-        private bool CheckUser(AccountType type)
-        {
-            if (RegistratedAccounts().First().AccountType==type)
-            {
-                return true;
-            }
-            return false;
         }
         public async Task<ActionResult> Index()
         {
@@ -72,22 +77,19 @@ namespace WPHW3.Controllers
         }
         public async Task<ActionResult> PatientMaster()
         {
-            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
-            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType!=AccountType.Patient) { return RedirectToAction("Index"); }
             
-            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
-            foreach (var d in db.Doctors)
-            {
-                string temp = d.FullName;
-            }
-            return View(patient);
+            return View(account.User);
         }
         public async Task<ActionResult> PatientAddDoctor()
         {
-            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
-            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
-            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType!=AccountType.Patient) { return RedirectToAction("Index"); }
 
+            Patient patient = (Patient)account.User;
             List<Doctor> awaibleDoctors = new List<Doctor>();
             awaibleDoctors.AddRange(db.Doctors.Where(d=>!patient.Doctors.Contains(d)));
 
@@ -95,10 +97,11 @@ namespace WPHW3.Controllers
         }
         public async Task<ActionResult> PatientDoAddDoctor(int Id)
         {
-            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
-            if (!CheckUser(AccountType.Patient)) { return RedirectToAction("Index"); }
-            Patient patient = db.Patients.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType != AccountType.Patient) { return RedirectToAction("Index"); }
 
+            Patient patient = (Patient)account.User;
             Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
             patient.Doctors.Add(doctor);
             doctor.Patients.Add(patient);
@@ -112,19 +115,19 @@ namespace WPHW3.Controllers
         }
         public async Task<ActionResult> DoctorMaster()
         {
-            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
-            if (!CheckUser(AccountType.Doctor)) { return RedirectToAction("Index"); }
-            Doctor doctor = db.Doctors.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType != AccountType.Doctor) { return RedirectToAction("Index"); }
 
-            return View(doctor);
+            return View((Doctor)account.User);
         }
         public async Task<ActionResult> AdminMaster()
         {
-            if (RegistratedAccounts().Count != 1) { return RedirectToAction("Index"); }
-            if (!CheckUser(AccountType.Admin)) { return RedirectToAction("Index"); }
-            User admin = db.Users.Where(u => u.Account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType != AccountType.Admin) { return RedirectToAction("Index"); }
 
-            return View(admin);
+            return View(account.User);
         }
         [HttpPost] 
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)
