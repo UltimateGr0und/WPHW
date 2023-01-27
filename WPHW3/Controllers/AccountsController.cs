@@ -91,7 +91,8 @@ namespace WPHW3.Controllers
 
             Patient patient = (Patient)account.User;
             List<Doctor> awaibleDoctors = new List<Doctor>();
-            awaibleDoctors.AddRange(db.Doctors.Where(d=>!patient.Doctors.Contains(d)));
+            List<int> UnAwaibleDoctorIds = patient.Doctors.Select(p => p.Id).ToList();
+            awaibleDoctors.AddRange(db.Doctors.Where(d => !UnAwaibleDoctorIds.Contains(d.Id)));
 
             return View(awaibleDoctors);
         }
@@ -106,8 +107,20 @@ namespace WPHW3.Controllers
             patient.Doctors.Add(doctor);
             doctor.Patients.Add(patient);
 
-            //db.Entry(doctor).State = System.Data.Entity.EntityState.Modified;
-            //db.Entry(patient).State = System.Data.Entity.EntityState.Modified;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction("PatientMaster");
+        }
+        public async Task<ActionResult> PatientDoDeleteDoctor(int Id)
+        {
+            Account account = RegistratedAccount();
+            if (account == null) { return RedirectToAction("Index"); }
+            if (account.AccountType != AccountType.Patient) { return RedirectToAction("Index"); }
+
+            Patient patient = (Patient)account.User;
+            Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
+            patient.Doctors.Remove(doctor);
+            doctor.Patients.Remove(patient);
 
             await db.SaveChangesAsync();
 

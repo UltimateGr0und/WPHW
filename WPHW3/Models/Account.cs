@@ -10,9 +10,9 @@ namespace WPHW3.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public ICollection<Session> Sessions { get; set; }
+        public virtual ICollection<Session> Sessions { get; set; }
         public AccountType AccountType { get; set; }
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public Account() { Sessions = new List<Session>(); }
     }
     public enum AccountType

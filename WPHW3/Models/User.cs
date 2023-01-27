@@ -15,7 +15,7 @@ namespace WPHW3.Models
         public int Id { get; set; }
         public string FullName { get; set; }
         public int AccountId { get; set; }
-        public Account Account { get; set; }
+        public virtual Account Account { get; set; }
 
     }
 }
