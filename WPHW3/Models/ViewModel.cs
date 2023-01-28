@@ -6,18 +6,13 @@ using System.Text;
 
 namespace WPHW3.Models
 {
-    public enum WithOut{
-        None,
-        With,
-        Without
-    }
     public class DoctorsFilterInfo
     {
-        public WithOut AnyPatients { get; set; }= WithOut.None;
+        public string AnyPatients { get; set; }= "None";
     }
     public class UsersFilterInfo
     {
-        public WithOut AnySessions { get; set; } = WithOut.None;
+        public string AnySessions { get; set; } = "None";
     }
     public class PageInfo
     {
@@ -37,5 +32,7 @@ namespace WPHW3.Models
         public PageInfo UsersPageInfo { get; set; }
         public IEnumerable<Doctor> Doctors { get; set; }
         public PageInfo DoctorsPageInfo { get; set; }
+        public DoctorsFilterInfo doctorsFilterInfo { get; set; }
+        public UsersFilterInfo usersFilterInfo { get; set; }
     }
 }

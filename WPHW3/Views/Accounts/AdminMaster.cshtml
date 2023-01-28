@@ -46,7 +46,7 @@
     <p>@doctor.Description</p>
 }
 <div class="btn-group">
-    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x, UsersPageNumber = Model.UsersPageInfo.PageNumber }))
+    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x, UsersPageNumber = Model.UsersPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
 </div>
 
 <h3>All users</h3>
@@ -65,5 +65,5 @@
     <h4>@user.FullName</h4>
 }
 <div class="btn-group">
-    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x, DoctorsPageNumber = Model.DoctorsPageInfo.PageNumber }))
+    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x, DoctorsPageNumber = Model.DoctorsPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
 </div>

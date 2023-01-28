@@ -145,13 +145,13 @@ namespace WPHW3.Controllers
             switch (AnyPatients)
             {
                 case "none":
-                    doctorsFilterInfo.AnyPatients = WithOut.None;
+                    doctorsFilterInfo.AnyPatients = "None";
                     break;
                 case "with patients":
-                    doctorsFilterInfo.AnyPatients = WithOut.With;
+                    doctorsFilterInfo.AnyPatients = "With";
                     break;
                 case "without patients":
-                    doctorsFilterInfo.AnyPatients = WithOut.Without;
+                    doctorsFilterInfo.AnyPatients = "Without";
                     break;
                 default:
                     break;
@@ -160,13 +160,13 @@ namespace WPHW3.Controllers
             switch (AnySessions)
             {
                 case "none":
-                    usersFilterInfo.AnySessions = WithOut.None;
+                    usersFilterInfo.AnySessions = "None";
                     break;
                 case "with sessions":
-                    usersFilterInfo.AnySessions = WithOut.With;
+                    usersFilterInfo.AnySessions = "With";
                     break;
                 case "without sessions":
-                    usersFilterInfo.AnySessions = WithOut.Without;
+                    usersFilterInfo.AnySessions = "Without";
                     break;
                 default:
                     break;
@@ -180,31 +180,39 @@ namespace WPHW3.Controllers
                 CurrentUser = account.User,
                 DoctorsPageInfo = new PageInfo { PageNumber = DoctorsPageNumber, PageSize = PageSize, TotalItems = db.Doctors.Count() },
                 UsersPageInfo = new PageInfo { PageNumber = UsersPageNumber, PageSize = PageSize, TotalItems = db.Users.Count() },
+                doctorsFilterInfo = doctorsFilterInfo,
+                usersFilterInfo= usersFilterInfo
             };
             switch (usersFilterInfo.AnySessions)
             {
-                case WithOut.None:
+                case "None":
                     viewModel.Users = db.Users.OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = db.Users.Count();
                     break;
-                case WithOut.With:
+                case "With":
                     viewModel.Users = db.Users.Where(u => u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = db.Users.Where(u => u.Account.Sessions.Any()).Count();
                     break;
-                case WithOut.Without:
+                case "Without":
                     viewModel.Users = db.Users.Where(u => !u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = db.Users.Where(u => !u.Account.Sessions.Any()).Count();
                     break;
                 default:
                     break;
             }
             switch (doctorsFilterInfo.AnyPatients)
             {
-                case WithOut.None:
+                case "None":
                     viewModel.Doctors = db.Doctors.OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Count();
                     break;
-                case WithOut.With:
+                case "With":
                     viewModel.Doctors = db.Doctors.Where(d=>d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Where(d => d.Patients.Any()).Count();
                     break;
-                case WithOut.Without:
+                case "Without":
                     viewModel.Doctors = db.Doctors.Where(d => !d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Where(d => !d.Patients.Any()).Count();
                     break;
                 default:
                     break;
