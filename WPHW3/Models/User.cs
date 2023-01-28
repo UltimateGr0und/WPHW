@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WPHW3.Models
 {
@@ -12,6 +13,7 @@ namespace WPHW3.Models
     {
         [Key]
         [ForeignKey("Account")]
+        [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
         public string FullName { get; set; }
         public int AccountId { get; set; }

@@ -134,13 +134,24 @@ namespace WPHW3.Controllers
 
             return View((Doctor)account.User);
         }
-        public async Task<ActionResult> AdminMaster()
+        public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1)
         {
             Account account = RegistratedAccount();
             if (account == null) { return RedirectToAction("Index"); }
             if (account.AccountType != AccountType.Admin) { return RedirectToAction("Index"); }
 
-            return View(account.User);
+            int PageSize = 5;
+
+            AdminViewModel viewModel = new AdminViewModel
+            {
+                CurrentUser = account.User,
+                DoctorsPageInfo = new PageInfo { PageNumber = DoctorsPageNumber, PageSize = PageSize, TotalItems = db.Doctors.Count() },
+                Doctors = db.Doctors.OrderBy(d=>d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize),
+                UsersPageInfo = new PageInfo { PageNumber = UsersPageNumber, PageSize = PageSize, TotalItems = db.Users.Count() },
+                Users = db.Users.OrderBy(d=>d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize)
+            };
+
+            return View(viewModel);
         }
         [HttpPost] 
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)

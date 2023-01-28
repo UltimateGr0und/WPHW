@@ -1,10 +1,10 @@
-﻿@model WPHW3.Models.User
-
+﻿@model WPHW3.Models.AdminViewModel
+@using WPHW3.Helpers
 @{
     ViewBag.Title = "AdminMaster";
 }
 
-<h2>Welcome @Model.FullName</h2>
+<h2>Welcome @Model.CurrentUser.FullName</h2>
 
 @Html.ActionLink("Log out", "LogOut")
 
@@ -29,9 +29,22 @@
     <input type="submit" name="submitButton" value="Create" />
 </form>
 
+
 <h3>Doctors</h3>
-@foreach (var doctor in new WPHW3.Models.AccountDBContext().Doctors)
+@foreach (var doctor in Model.Doctors)
 {
     <h4>@doctor.FullName</h4>
     <p>@doctor.Description</p>
 }
+<div class="btn-group">
+    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x }))
+</div>
+
+<h3>All users</h3>
+@foreach (var doctor in Model.Users)
+{
+    <h4>@doctor.FullName</h4>
+}
+<div class="btn-group">
+    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x }))
+</div>
