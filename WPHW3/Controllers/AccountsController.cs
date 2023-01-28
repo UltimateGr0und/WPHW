@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Xml.Linq;
 using WPHW3.Models;
 
@@ -134,25 +135,96 @@ namespace WPHW3.Controllers
 
             return View((Doctor)account.User);
         }
-        public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1)
+        public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1, string AnyPatients = "none", string AnySessions="none")
         {
             Account account = RegistratedAccount();
             if (account == null) { return RedirectToAction("Index"); }
             if (account.AccountType != AccountType.Admin) { return RedirectToAction("Index"); }
-
+            
+            DoctorsFilterInfo doctorsFilterInfo = new DoctorsFilterInfo();
+            switch (AnyPatients)
+            {
+                case "none":
+                    doctorsFilterInfo.AnyPatients = WithOut.None;
+                    break;
+                case "with patients":
+                    doctorsFilterInfo.AnyPatients = WithOut.With;
+                    break;
+                case "without patients":
+                    doctorsFilterInfo.AnyPatients = WithOut.Without;
+                    break;
+                default:
+                    break;
+            }
+            UsersFilterInfo usersFilterInfo = new UsersFilterInfo();
+            switch (AnySessions)
+            {
+                case "none":
+                    usersFilterInfo.AnySessions = WithOut.None;
+                    break;
+                case "with sessions":
+                    usersFilterInfo.AnySessions = WithOut.With;
+                    break;
+                case "without sessions":
+                    usersFilterInfo.AnySessions = WithOut.Without;
+                    break;
+                default:
+                    break;
+            }
             int PageSize = 5;
+            if (usersFilterInfo == null) { usersFilterInfo = new UsersFilterInfo(); }
+            if(doctorsFilterInfo == null) { doctorsFilterInfo = new DoctorsFilterInfo(); }
 
             AdminViewModel viewModel = new AdminViewModel
             {
                 CurrentUser = account.User,
                 DoctorsPageInfo = new PageInfo { PageNumber = DoctorsPageNumber, PageSize = PageSize, TotalItems = db.Doctors.Count() },
-                Doctors = db.Doctors.OrderBy(d=>d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize),
                 UsersPageInfo = new PageInfo { PageNumber = UsersPageNumber, PageSize = PageSize, TotalItems = db.Users.Count() },
-                Users = db.Users.OrderBy(d=>d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize)
             };
-
+            switch (usersFilterInfo.AnySessions)
+            {
+                case WithOut.None:
+                    viewModel.Users = db.Users.OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    break;
+                case WithOut.With:
+                    viewModel.Users = db.Users.Where(u => u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    break;
+                case WithOut.Without:
+                    viewModel.Users = db.Users.Where(u => !u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    break;
+                default:
+                    break;
+            }
+            switch (doctorsFilterInfo.AnyPatients)
+            {
+                case WithOut.None:
+                    viewModel.Doctors = db.Doctors.OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    break;
+                case WithOut.With:
+                    viewModel.Doctors = db.Doctors.Where(d=>d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    break;
+                case WithOut.Without:
+                    viewModel.Doctors = db.Doctors.Where(d => !d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    break;
+                default:
+                    break;
+            }
             return View(viewModel);
         }
+        [HttpPost]
+        public async Task<ActionResult> SubmitDoctorsFilter(string AnyPatients)
+        {
+            
+            return RedirectToAction("AdminMaster", new RouteValueDictionary(
+    new { controller = "accounts", action = "AdminMaster", AnyPatients = AnyPatients })); 
+        }
+        public async Task<ActionResult> SubmitUsersFilter(string AnySessions)
+        {
+            
+            return RedirectToAction("AdminMaster", new RouteValueDictionary(
+    new { controller = "accounts", action = "AdminMaster",AnySessions = AnySessions }));
+        
+    }
         [HttpPost] 
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)
         {

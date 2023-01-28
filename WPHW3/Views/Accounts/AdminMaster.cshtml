@@ -29,22 +29,41 @@
     <input type="submit" name="submitButton" value="Create" />
 </form>
 
-
 <h3>Doctors</h3>
+<form action="SubmitDoctorsFilter" method="post">
+    <label>Filters</label>
+    <select name="AnyPatients">
+        <option>none</option>
+        <option>with patients</option>
+        <option>without patients</option>
+    </select>
+    <input type="submit" value="submit" />
+</form>
+
 @foreach (var doctor in Model.Doctors)
 {
     <h4>@doctor.FullName</h4>
     <p>@doctor.Description</p>
 }
 <div class="btn-group">
-    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x }))
+    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x, UsersPageNumber = Model.UsersPageInfo.PageNumber }))
 </div>
 
 <h3>All users</h3>
-@foreach (var doctor in Model.Users)
+<form action="SubmitUsersFilter" method="post">
+    <label>Filters</label>
+    <select name="AnySessions">
+        <option>none</option>
+        <option>with sessions</option>
+        <option>without sessions</option>
+    </select>
+    <input type="submit" value="submit" />
+</form>
+
+@foreach (var user in Model.Users)
 {
-    <h4>@doctor.FullName</h4>
+    <h4>@user.FullName</h4>
 }
 <div class="btn-group">
-    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x }))
+    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x, DoctorsPageNumber = Model.DoctorsPageInfo.PageNumber }))
 </div>

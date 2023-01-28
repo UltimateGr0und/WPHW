@@ -6,6 +6,19 @@ using System.Text;
 
 namespace WPHW3.Models
 {
+    public enum WithOut{
+        None,
+        With,
+        Without
+    }
+    public class DoctorsFilterInfo
+    {
+        public WithOut AnyPatients { get; set; }= WithOut.None;
+    }
+    public class UsersFilterInfo
+    {
+        public WithOut AnySessions { get; set; } = WithOut.None;
+    }
     public class PageInfo
     {
         public int PageNumber { get; set; }
