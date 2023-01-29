@@ -57,7 +57,7 @@ namespace WPHW3.Controllers
                 switch (type)
                 {
                     case AccountType.Admin:
-                        return RedirectToAction("AdminMaster");
+                        return RedirectToAction("EtoNeVhodDlyaAdmina");
                     case AccountType.Doctor:
                         return RedirectToAction("DoctorMaster");
                     case AccountType.Patient:
@@ -223,13 +223,13 @@ namespace WPHW3.Controllers
         public async Task<ActionResult> SubmitDoctorsFilter(string AnyPatients)
         {
             
-            return RedirectToAction("AdminMaster", new RouteValueDictionary(
+            return RedirectToAction("EtoNeVhodDlyaAdmina", new RouteValueDictionary(
     new { controller = "accounts", action = "AdminMaster", AnyPatients = AnyPatients })); 
         }
         public async Task<ActionResult> SubmitUsersFilter(string AnySessions)
         {
             
-            return RedirectToAction("AdminMaster", new RouteValueDictionary(
+            return RedirectToAction("EtoNeVhodDlyaAdmina", new RouteValueDictionary(
     new { controller = "accounts", action = "AdminMaster",AnySessions = AnySessions }));
         
     }
@@ -238,7 +238,7 @@ namespace WPHW3.Controllers
         {
             if (db.Accounts.Where(a => a.Name == username).Count()!=0)
             {
-                return RedirectToAction("AdminMaster");
+                return RedirectToAction("EtoNeVhodDlyaAdmina");
             }
             Doctor doctor = new Doctor() { FullName = fullname, Description = description };
             Account account = new Account() { AccountType= AccountType.Doctor, Name=username, Password=password };
@@ -248,7 +248,7 @@ namespace WPHW3.Controllers
             doctor.Account = account;
             db.SaveChanges();
 
-            return RedirectToAction("AdminMaster");
+            return RedirectToAction("EtoNeVhodDlyaAdmina");
         }
         public async Task<ActionResult> Registration()
         {
