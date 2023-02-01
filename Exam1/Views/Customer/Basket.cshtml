@@ -1,0 +1,23 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "Basket";
+}
+
+<h2>Basket</h2>
+@Html.ActionLink("Personal cabinet", "PersonalCabinet")
+@Html.ActionLink("Main page", "Index")
+
+<ul>
+    @foreach (var product in Model.ProductsToBuy)
+    {
+        <li>@product.ProductInfo.Name @product.ProductInfo.Price$ @Html.ActionLink("details", "Details", "Customer", new { product.ProductInfo.Id }, null) @Html.ActionLink("remove", "RemoveFromBasket", "Customer", new { product.Id }, null)</li>
+    }
+</ul>
+
+<h4>Total: @Model.ProductsToBuy.Select(p=>p.ProductInfo.Price).Sum()$</h4>
+
+@Html.ActionLink("Confirm order","ConfirmOrder");
+
+
+

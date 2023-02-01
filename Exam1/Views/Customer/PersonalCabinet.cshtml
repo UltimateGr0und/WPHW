@@ -1,0 +1,18 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "PersonalCabinet";
+}
+
+<h2>PersonalCabinet</h2>
+@Html.ActionLink("Basket", "Basket")
+@Html.ActionLink("Main page", "Index")
+@Html.ActionLink("Add new product","CreateProductInfo")
+
+<h4>Your products</h4>
+<ul>
+    @foreach (var product in Model.ProductsToSell)
+    {
+        <li>@product.Name @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)</li>
+    }
+</ul>

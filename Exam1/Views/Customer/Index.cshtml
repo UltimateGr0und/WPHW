@@ -1,0 +1,19 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Welcome @Model.Username</h2>
+@Html.ActionLink("Personal cabinet","PersonalCabinet")
+@Html.ActionLink("Basket","Basket")
+
+<h3>All products</h3>
+<ul>
+    @foreach (var product in new Exam1.Models.AccountDBContext().ProductInfos.Where(p=>p.TotalAmount>0))
+	{
+        <li><h4>@product.Name</h4> <i>@product.Price$</i> @Html.ActionLink("buy", "Details","Customer",new { product.Id },null) <br/>
+        @product.TotalAmount left</li>
+	}
+</ul>
+
