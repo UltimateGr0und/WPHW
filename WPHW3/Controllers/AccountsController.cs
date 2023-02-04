@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Xml.Linq;
+using WPHW3.Filters;
 using WPHW3.Models;
 
 namespace WPHW3.Controllers
@@ -45,6 +46,7 @@ namespace WPHW3.Controllers
             }
             db.SaveChanges();
         }
+        [ExceptionFilter]
         public async Task<ActionResult> Index()
         {
             //List<Account> accounts = db.Accounts.Where(a => a.IsLocked == true).ToList();
@@ -76,19 +78,18 @@ namespace WPHW3.Controllers
                 return RedirectToAction("Registration");
             }
         }
+        [CacheAttribute]
+        [PatientAuthentificationFilter]
         public async Task<ActionResult> PatientMaster()
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType!=AccountType.Patient) { return RedirectToAction("Index"); }
             
             return View(account.User);
         }
+        [PatientAuthentificationFilter]
         public async Task<ActionResult> PatientAddDoctor()
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType!=AccountType.Patient) { return RedirectToAction("Index"); }
 
             Patient patient = (Patient)account.User;
             List<Doctor> awaibleDoctors = new List<Doctor>();
@@ -97,11 +98,10 @@ namespace WPHW3.Controllers
 
             return View(awaibleDoctors);
         }
+        [PatientAuthentificationFilter]
         public async Task<ActionResult> PatientDoAddDoctor(int Id)
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType != AccountType.Patient) { return RedirectToAction("Index"); }
 
             Patient patient = (Patient)account.User;
             Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
@@ -112,11 +112,10 @@ namespace WPHW3.Controllers
 
             return RedirectToAction("PatientMaster");
         }
+        [PatientAuthentificationFilter]
         public async Task<ActionResult> PatientDoDeleteDoctor(int Id)
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType != AccountType.Patient) { return RedirectToAction("Index"); }
 
             Patient patient = (Patient)account.User;
             Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
@@ -127,19 +126,19 @@ namespace WPHW3.Controllers
 
             return RedirectToAction("PatientMaster");
         }
+        [DoctorAuthentificationFilter]
+        [CacheAttribute]
         public async Task<ActionResult> DoctorMaster()
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType != AccountType.Doctor) { return RedirectToAction("Index"); }
 
             return View((Doctor)account.User);
         }
+        [CacheAttribute]
+        [AdminAuthentificationFilter]
         public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1, string AnyPatients = "none", string AnySessions="none")
         {
             Account account = RegistratedAccount();
-            if (account == null) { return RedirectToAction("Index"); }
-            if (account.AccountType != AccountType.Admin) { return RedirectToAction("Index"); }
             
             DoctorsFilterInfo doctorsFilterInfo = new DoctorsFilterInfo();
             switch (AnyPatients)
@@ -219,13 +218,16 @@ namespace WPHW3.Controllers
             }
             return View(viewModel);
         }
+        [AdminAuthentificationFilter]
         [HttpPost]
         public async Task<ActionResult> SubmitDoctorsFilter(string AnyPatients)
         {
             
             return RedirectToAction("EtoNeVhodDlyaAdmina", new RouteValueDictionary(
-    new { controller = "accounts", action = "AdminMaster", AnyPatients = AnyPatients })); 
+    new { controller = "accounts", action = "AdminMaster", AnyPatients = AnyPatients }));
         }
+        [AdminAuthentificationFilter]
+        [HttpPost]
         public async Task<ActionResult> SubmitUsersFilter(string AnySessions)
         {
             
@@ -233,7 +235,8 @@ namespace WPHW3.Controllers
     new { controller = "accounts", action = "AdminMaster",AnySessions = AnySessions }));
         
     }
-        [HttpPost] 
+        [AdminAuthentificationFilter]
+        [HttpPost]
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)
         {
             if (db.Accounts.Where(a => a.Name == username).Count()!=0)
@@ -254,7 +257,9 @@ namespace WPHW3.Controllers
         {
             return View();
         }
+        [ExceptionFilter]
         [HttpPost]
+        [ActionFilter]
         public async Task<ActionResult> Registration(string username, string password, string submitButton)
         {
             if (RegistratedAccounts().Count != 0)
@@ -293,6 +298,7 @@ namespace WPHW3.Controllers
             }
             return RedirectToAction("Index");
         }
+        [ExceptionFilter]
         public async Task<ActionResult> LogOut()
         {            
             Account account = db.Accounts.Where(
