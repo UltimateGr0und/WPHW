@@ -135,6 +135,7 @@ namespace WPHW3.Controllers
             return View((Doctor)account.User);
         }
         [CacheAttribute]
+        [ExceptionFilter]
         [AdminAuthentificationFilter]
         public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1, string AnyPatients = "none", string AnySessions="none")
         {
