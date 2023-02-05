@@ -1,0 +1,21 @@
+﻿@model Exam1.Models.ProductInfo
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Name</h2>
+<h4>Price: @Model.Price Available: @Model.TotalAmount</h4>
+    <p>@Model.Description</p>
+
+    <form action="AddToBasket" method="post">
+        <input type="hidden" value="@Model.Id" name="id"/>
+        <input type="number" name="amount" value="1"/>
+        <input type="submit" value="buy"/>
+    </form>
+
+    @Html.ActionLink("buy", "AddToBasket", "Customer", new { Model.Id }, null)
+
+
+
+

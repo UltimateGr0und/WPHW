@@ -1,0 +1,19 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "SignUp";
+    Layout = null;
+}
+
+<h2>SignUp</h2>
+
+@using (Html.BeginForm("SignUp", "Registration", FormMethod.Post))
+{
+    <label>Username</label>
+    @Html.EditorFor(m => m.Username)
+    <label>Password</label>
+    @Html.EditorFor(m => m.Password)
+    <input type="submit" value="Sign up" />
+}
+
+@Html.ActionLink("If you already have account, click here", "SignIn")
