@@ -4,11 +4,11 @@
 
 <h2>Registration</h2>
 
-<form action="Registration" method="post">
-    <input type="text" name="username" />
-    <input type="password" name="password" />
-    <input type="submit" name="submitButton" value="SignIn" />
-    <input type="submit" name="submitButton" value="SignUp" />
+<form action="Registration" method="post" class="container">
+    <input type="text" name="username" class="col-xs-10 col-sm-7 col-md-3"/>
+    <input type="password" name="password" class="col-xs-10 col-sm-7 col-md-3"/>
+    <input type="submit" name="submitButton" value="SignIn" class="col-xs-4 col-sm-3 col-md-1"/>
+    <input type="submit" name="submitButton" value="SignUp" class="col-xs-4 col-sm-3 col-md-1"/>
 </form>
 
 @*@Html.BeginForm("MyAction", "MyController", FormMethod.Post); 

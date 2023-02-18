@@ -10,21 +10,21 @@
 
 <h3>Create new doctor</h3>
 <form action="CreateDoctor" method="post">
-    <div>
-        <label>Login</label>
-        <input type="text" name="username" />
+    <div class="container">
+        <label class="col-xs-10 col-sm-7 col-md-2">Login</label>
+        <input type="text" name="username"  class="col-xs-10 col-sm-7 col-md-3"/>
     </div>
-    <div>
-        <label>Password</label>
-        <input type="password" name="password" />
+    <div class="container">
+        <label class="col-xs-10 col-sm-7 col-md-2">Password</label>
+        <input class="col-xs-10 col-sm-7 col-md-3" type="password" name="password" />
     </div>
-    <div>
-        <label>Fullname</label>
-        <input type="text" name="fullname" />
+    <div class="container">
+        <label class="col-xs-10 col-sm-7 col-md-2">Fullname</label>
+        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="fullname" />
     </div>
-    <div>
-        <label>Description</label>
-        <input type="text" name="description" />
+    <div class="container">
+        <label class="col-xs-10 col-sm-7 col-md-2">Description</label>
+        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="description" />
     </div>
     <input type="submit" name="submitButton" value="Create" />
 </form>
@@ -41,21 +41,30 @@
 </form>
 
 
-@using (Ajax.BeginForm("SubmitDoctorNameFilter", new AjaxOptions {}))
+@using (Ajax.BeginForm("SubmitDoctorNameFilter", new AjaxOptions { }))
 {
     <input type="text" name="DoctorName">
     <input type="submit" value="Find">
 }
-
-@foreach (var doctor in Model.Doctors)
+@if (Model.Doctors.Any())
 {
-    <h4>@doctor.FullName</h4>
-    <p>@doctor.Description</p>
+    <div>
+        @foreach (var doctor in Model.Doctors)
+        {
+            <h4>@doctor.FullName</h4>
+            <p>@doctor.Description</p>
+        }
+        <div class="btn-group">
+            @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x, UsersPageNumber = Model.UsersPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
+        </div>
+    </div>
 }
-<div class="btn-group">
-    @Html.PageLinks(Model.DoctorsPageInfo, x => Url.Action("AdminMaster", new { DoctorsPageNumber = x, UsersPageNumber = Model.UsersPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
-</div>
-
+else
+{
+    <div class="alert alert-info">
+        Doctors list is empty
+    </div>
+}
 <h3>All users</h3>
 <form action="SubmitUsersFilter" method="post">
     <label>Filters</label>
@@ -67,10 +76,22 @@
     <input type="submit" value="submit" />
 </form>
 
-@foreach (var user in Model.Users)
+@if (Model.Users.Any())
 {
-    <h4>@user.FullName</h4>
+    <div>
+        @foreach (var user in Model.Users)
+        {
+            <h4>@user.FullName</h4>
+        }
+        <div class="btn-group">
+            @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x, DoctorsPageNumber = Model.DoctorsPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
+        </div>
+    </div>
 }
-<div class="btn-group">
-    @Html.PageLinks(Model.UsersPageInfo, x => Url.Action("AdminMaster", new { UsersPageNumber = x, DoctorsPageNumber = Model.DoctorsPageInfo.PageNumber, AnyPatients = Model.doctorsFilterInfo.AnyPatients, AnySessions = Model.usersFilterInfo.AnySessions }))
-</div>
+else
+{
+    <div class="alert alert-info">
+        Users list is empty
+    </div>
+
+}
