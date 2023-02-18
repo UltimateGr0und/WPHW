@@ -12,15 +12,16 @@ namespace Exam1.Models
     {        
         [HiddenInput(DisplayValue = false)]
         public int Id { get; set; }
-        [Required]
-        [MaxLength(20)]
-        [Display(Name = "Name")]
+        [Required(ErrorMessage = "Username is required")]
+        [MaxLength(20,ErrorMessage = "Username is too long")]
+        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Unacceptable username")]
+        [Display(Name = "Username")]
         public string Username { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Password is required")]
         [DataType(DataType.Password)]
-        [MinLength(4)]
-        [MaxLength(20)]
         [Display(Name = "Password")]
+        [MinLength(4,ErrorMessage = "Password shoul contain at least 4 characters or numbers without special symbols")]
+        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Password should contain at least 4 characters or numbers without special symbols")]
         public string Password { get; set; }
         public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
         public virtual ICollection<ProductInfo> ProductsToSell { get; set; } = new List<ProductInfo>();

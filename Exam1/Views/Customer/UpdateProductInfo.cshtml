@@ -7,11 +7,11 @@
 <h2>Edit your product</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("UpdateProductInfo", "Customer", FormMethod.Post))
 {
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
         <h4>Product</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
