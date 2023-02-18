@@ -134,14 +134,12 @@ namespace WPHW3.Controllers
 
             return View((Doctor)account.User);
         }
-        [CacheAttribute]
-        [ExceptionFilter]
         [AdminAuthentificationFilter]
-        public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1, string AnyPatients = "none", string AnySessions="none")
+        public async Task<ActionResult> AdminMaster(int DoctorsPageNumber = 1, int UsersPageNumber = 1, string AnyPatients = "none", string AnySessions="none", string DoctorNameFilter="")
         {
             Account account = RegistratedAccount();
             
-            DoctorsFilterInfo doctorsFilterInfo = new DoctorsFilterInfo();
+            DoctorsFilterInfo doctorsFilterInfo = new DoctorsFilterInfo() { DoctorNameFilter=DoctorNameFilter };
             switch (AnyPatients)
             {
                 case "none":
@@ -217,8 +215,19 @@ namespace WPHW3.Controllers
                 default:
                     break;
             }
+            if (DoctorNameFilter != "") { viewModel.Doctors = viewModel.Doctors.Where(d => d.FullName.Contains(DoctorNameFilter)); }
             return View(viewModel);
         }
+
+        [AdminAuthentificationFilter]
+        [HttpPost]
+        public async Task<ActionResult> SubmitDoctorNameFilter(string DoctorName)
+        {
+            
+            return RedirectToAction("EtoNeVhodDlyaAdmina", new RouteValueDictionary(
+    new { controller = "accounts", action = "AdminMaster", DoctorNameFilter = DoctorName }));
+        }
+
         [AdminAuthentificationFilter]
         [HttpPost]
         public async Task<ActionResult> SubmitDoctorsFilter(string AnyPatients)
@@ -258,9 +267,7 @@ namespace WPHW3.Controllers
         {
             return View();
         }
-        [ExceptionFilter]
         [HttpPost]
-        [ActionFilter]
         public async Task<ActionResult> Registration(string username, string password, string submitButton)
         {
             if (RegistratedAccounts().Count != 0)

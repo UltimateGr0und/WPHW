@@ -9,6 +9,7 @@ namespace WPHW3.Models
     public class DoctorsFilterInfo
     {
         public string AnyPatients { get; set; }= "None";
+        public string DoctorNameFilter { get; set; } = "";
     }
     public class UsersFilterInfo
     {
