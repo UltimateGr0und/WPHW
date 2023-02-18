@@ -8,26 +8,43 @@
 
 @Ajax.ActionLink("Log out", "LogOut", new AjaxOptions { })
 
-<h3>Create new doctor</h3>
-<form action="CreateDoctor" method="post">
-    <div class="container">
-        <label class="col-xs-10 col-sm-7 col-md-2">Login</label>
-        <input type="text" name="username"  class="col-xs-10 col-sm-7 col-md-3"/>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+    Create new doctor account
+</button>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLongTitle">Create doctor account</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="CreateDoctor" method="post">
+                    <div class="container">
+                        <label class="col-xs-10 col-sm-7 col-md-2">Login</label>
+                        <input type="text" name="username" class="col-xs-10 col-sm-7 col-md-3" />
+                    </div>
+                    <div class="container">
+                        <label class="col-xs-10 col-sm-7 col-md-2">Password</label>
+                        <input class="col-xs-10 col-sm-7 col-md-3" type="password" name="password" />
+                    </div>
+                    <div class="container">
+                        <label class="col-xs-10 col-sm-7 col-md-2">Fullname</label>
+                        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="fullname" />
+                    </div>
+                    <div class="container">
+                        <label class="col-xs-10 col-sm-7 col-md-2">Description</label>
+                        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="description" />
+                    </div>
+                    <input type="submit" name="submitButton" value="Create" />
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="container">
-        <label class="col-xs-10 col-sm-7 col-md-2">Password</label>
-        <input class="col-xs-10 col-sm-7 col-md-3" type="password" name="password" />
-    </div>
-    <div class="container">
-        <label class="col-xs-10 col-sm-7 col-md-2">Fullname</label>
-        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="fullname" />
-    </div>
-    <div class="container">
-        <label class="col-xs-10 col-sm-7 col-md-2">Description</label>
-        <input class="col-xs-10 col-sm-7 col-md-3" type="text" name="description" />
-    </div>
-    <input type="submit" name="submitButton" value="Create" />
-</form>
+</div>
 
 <h3>Doctors</h3>
 <form action="SubmitDoctorsFilter" method="post">
