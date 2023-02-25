@@ -1,0 +1,10 @@
+﻿@model WPHW6.Models.Quest
+
+<div class="card" style="width: 18rem;">
+    <img class="card-img-top" style="max-height:35%;width:100%" src="@Model.Logo" alt="Card image cap">
+    <div class="card-body">
+        <h5 class="card-title">@Model.Name</h5>
+        <p class="card-text">@Model.Description</p>
+        @Html.ActionLink("details", "Details", "Quests", new { Model.Id }, new {@class= "btn btn-primary" })
+    </div>
+</div>

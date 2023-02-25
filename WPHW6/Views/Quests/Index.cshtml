@@ -1,0 +1,18 @@
+﻿@model IEnumerable<WPHW6.Models.Quest>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Quests</h2>
+<div class="container">
+    <div class="row">
+        @foreach (var quest in Model)
+        {
+            <div class="col-md-2">
+                @Html.Partial("DescriptionCard", quest)
+            </div>
+        }
+    </div>
+</div>
+

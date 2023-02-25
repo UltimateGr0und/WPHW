@@ -165,6 +165,11 @@
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Quests\Details.cshtml" />
+    <Content Include="Views\Quests\DescriptionCard.cshtml" />
+    <Content Include="Views\Quests\Index.cshtml" />
+    <Content Include="Views\Quests\AdminPanel.cshtml" />
+    <Content Include="Views\Quests\Create.cshtml" />
+    <Content Include="Views\Quests\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
