@@ -13,13 +13,15 @@ namespace WPHW3.Controllers
 {
     public class AccountsController : Controller
     {
-        private AccountDBContext db = new AccountDBContext();
+        //private AccountDBContext db = new AccountDBContext();
+        private IAccountRepo repo = new AccountRepo();
         // GET: Accounts
+        public AccountsController(IAccountRepo r) { repo = r; }
         private Account RegistratedAccount()
         {
             try
             {
-                return db.Accounts.Where(
+                return repo.GetAccounts().Where(
                 a => a.Sessions.Where(
                     s => s.Ip == HttpContext.Request.UserHostAddress).Any()).Single();
             }
@@ -30,7 +32,7 @@ namespace WPHW3.Controllers
         } 
         private List<Account> RegistratedAccounts()
         {
-            return db.Accounts.Where(
+            return repo.GetAccounts().Where(
                 a => a.Sessions.Where(
                     s => s.Ip == HttpContext.Request.UserHostAddress).Any()).ToList();
         }
@@ -41,10 +43,9 @@ namespace WPHW3.Controllers
             {
                 foreach (var session in account.Sessions)
                 {
-                    db.Sessions.Remove(session);
+                    repo.RemoveSession(session.Id);
                 }
             }
-            db.SaveChanges();
         }
         [ExceptionFilter]
         public async Task<ActionResult> Index()
@@ -94,7 +95,7 @@ namespace WPHW3.Controllers
             Patient patient = (Patient)account.User;
             List<Doctor> awaibleDoctors = new List<Doctor>();
             List<int> UnAwaibleDoctorIds = patient.Doctors.Select(p => p.Id).ToList();
-            awaibleDoctors.AddRange(db.Doctors.Where(d => !UnAwaibleDoctorIds.Contains(d.Id)));
+            awaibleDoctors.AddRange(repo.GetDoctors().Where(d => !UnAwaibleDoctorIds.Contains(d.Id)));
 
             return View(awaibleDoctors);
         }
@@ -104,11 +105,11 @@ namespace WPHW3.Controllers
             Account account = RegistratedAccount();
 
             Patient patient = (Patient)account.User;
-            Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
+            Doctor doctor = (Doctor)repo.FindDoctor(Id);
             patient.Doctors.Add(doctor);
             doctor.Patients.Add(patient);
 
-            await db.SaveChangesAsync();
+            repo.SaveChanges();
 
             return RedirectToAction("PatientMaster");
         }
@@ -118,11 +119,11 @@ namespace WPHW3.Controllers
             Account account = RegistratedAccount();
 
             Patient patient = (Patient)account.User;
-            Doctor doctor = (Doctor)db.Users.Where(d => d.Id == Id).First();
+            Doctor doctor = repo.FindDoctor(Id);
             patient.Doctors.Remove(doctor);
             doctor.Patients.Remove(patient);
 
-            await db.SaveChangesAsync();
+            repo.SaveChanges();
 
             return RedirectToAction("PatientMaster");
         }
@@ -176,24 +177,24 @@ namespace WPHW3.Controllers
             AdminViewModel viewModel = new AdminViewModel
             {
                 CurrentUser = account.User,
-                DoctorsPageInfo = new PageInfo { PageNumber = DoctorsPageNumber, PageSize = PageSize, TotalItems = db.Doctors.Count() },
-                UsersPageInfo = new PageInfo { PageNumber = UsersPageNumber, PageSize = PageSize, TotalItems = db.Users.Count() },
+                DoctorsPageInfo = new PageInfo { PageNumber = DoctorsPageNumber, PageSize = PageSize, TotalItems = repo.GetDoctors().Count() },
+                UsersPageInfo = new PageInfo { PageNumber = UsersPageNumber, PageSize = PageSize, TotalItems = repo.GetUsers().Count() },
                 doctorsFilterInfo = doctorsFilterInfo,
                 usersFilterInfo= usersFilterInfo
             };
             switch (usersFilterInfo.AnySessions)
             {
                 case "None":
-                    viewModel.Users = db.Users.OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
-                    viewModel.UsersPageInfo.TotalItems = db.Users.Count();
+                    viewModel.Users = repo.GetUsers().OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = repo.GetUsers().Count();
                     break;
                 case "With":
-                    viewModel.Users = db.Users.Where(u => u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
-                    viewModel.UsersPageInfo.TotalItems = db.Users.Where(u => u.Account.Sessions.Any()).Count();
+                    viewModel.Users = repo.GetUsers().Where(u => u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = repo.GetUsers().Where(u => u.Account.Sessions.Any()).Count();
                     break;
                 case "Without":
-                    viewModel.Users = db.Users.Where(u => !u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
-                    viewModel.UsersPageInfo.TotalItems = db.Users.Where(u => !u.Account.Sessions.Any()).Count();
+                    viewModel.Users = repo.GetUsers().Where(u => !u.Account.Sessions.Any()).OrderBy(d => d.Id).Skip(PageSize * (UsersPageNumber - 1)).Take(PageSize);
+                    viewModel.UsersPageInfo.TotalItems = repo.GetUsers().Where(u => !u.Account.Sessions.Any()).Count();
                     break;
                 default:
                     break;
@@ -201,16 +202,16 @@ namespace WPHW3.Controllers
             switch (doctorsFilterInfo.AnyPatients)
             {
                 case "None":
-                    viewModel.Doctors = db.Doctors.OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
-                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Count();
+                    viewModel.Doctors = repo.GetDoctors().OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = repo.GetDoctors().Count();
                     break;
                 case "With":
-                    viewModel.Doctors = db.Doctors.Where(d=>d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
-                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Where(d => d.Patients.Any()).Count();
+                    viewModel.Doctors = repo.GetDoctors().Where(d=>d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = repo.GetDoctors().Where(d => d.Patients.Any()).Count();
                     break;
                 case "Without":
-                    viewModel.Doctors = db.Doctors.Where(d => !d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
-                    viewModel.DoctorsPageInfo.TotalItems = db.Doctors.Where(d => !d.Patients.Any()).Count();
+                    viewModel.Doctors = repo.GetDoctors().Where(d => !d.Patients.Any()).OrderBy(d => d.Id).Skip(PageSize * (DoctorsPageNumber - 1)).Take(PageSize);
+                    viewModel.DoctorsPageInfo.TotalItems = repo.GetDoctors().Where(d => !d.Patients.Any()).Count();
                     break;
                 default:
                     break;
@@ -249,17 +250,17 @@ namespace WPHW3.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateDoctor(string username,string password,string fullname,string description)
         {
-            if (db.Accounts.Where(a => a.Name == username).Count()!=0)
+            if (repo.GetAccounts().Where(a => a.Name == username).Count()!=0)
             {
                 return RedirectToAction("EtoNeVhodDlyaAdmina");
             }
             Doctor doctor = new Doctor() { FullName = fullname, Description = description };
             Account account = new Account() { AccountType= AccountType.Doctor, Name=username, Password=password };
-            db.Accounts.Add(account);
-            db.Doctors.Add(doctor);
+            repo.AddAccount(account);
+            repo.AddDoctor(doctor);
             account.User = doctor;
             doctor.Account = account;
-            db.SaveChanges();
+            repo.SaveChanges();
 
             return RedirectToAction("EtoNeVhodDlyaAdmina");
         }
@@ -278,29 +279,29 @@ namespace WPHW3.Controllers
             switch (submitButton)
             {
                 case "SignUp":
-                    if (db.Accounts.Where(a => a.Name == username).Count() == 0)
+                    if (repo.GetAccounts().Where(a => a.Name == username).Count() == 0)
                     {
                         Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1) };
                         Patient patient = new Patient() { FullName = username };
                         account.AccountType = AccountType.Patient;
 
-                        db.Patients.Add(patient);
-                        db.Sessions.Add(session);
-                        db.Accounts.Add(account);
+                        repo.AddPatient(patient);
+                        repo.AddSession(session);
+                        repo.AddAccount(account);
                         account.Sessions.Add(session);
                         account.User = patient;
                         patient.Account = account;
-                        db.SaveChanges();
+                        repo.SaveChanges();
                     }
                     break;
                 case "SignIn":
-                    List<Account> currentAccounts = db.Accounts.Where(a => (a.Name == username && a.Password == password)).ToList();
+                    List<Account> currentAccounts = repo.GetAccounts().Where(a => (a.Name == username && a.Password == password)).ToList();
                     if (currentAccounts.Count == 1)
                     {
                         Session session = new Session() { Account = currentAccounts.First(), StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress };
-                        db.Sessions.Add(session);
+                        repo.AddSession(session);
                         currentAccounts.First().Sessions.Add(session);
-                        db.SaveChanges();
+                        repo.SaveChanges();
                     }
                     break;
             }
@@ -309,13 +310,13 @@ namespace WPHW3.Controllers
         [ExceptionFilter]
         public async Task<ActionResult> LogOut()
         {            
-            Account account = db.Accounts.Where(
+            Account account = repo.GetAccounts().Where(
                 a => a.Sessions.Where(
                     s => s.Ip == HttpContext.Request.UserHostAddress).Any()).First();
-            foreach (var item in db.Sessions) { }
+            foreach (var item in repo.GetSessions()) { }
             Session session = account.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First();
             account.Sessions.Remove(session);
-            db.SaveChanges();
+            repo.SaveChanges();
             return RedirectToAction("Registration");
         }
     }
