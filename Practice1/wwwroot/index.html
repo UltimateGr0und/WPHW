@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>todos</title>
+</head>
+<body>
+    <input type="hidden" id="todoId" />
+
+    <input id="todoName" />
+    <input id="todoPriority" />
+    <input id="todoDeadline" />
+    <input id="todoIsFinished" />
+
+    <button id="saveBtn">Save</button>
+    <button id="resetBtn">Reset</button>
+
+    <table>
+        <thead>
+            <tr> <th>Name</th> <th>Priority</th> <th>Deadline</th> <th>IsFinished</th> <th></th> </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+
+        async function GetToDos() {
+            const response = await fetch("/ToDos", {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+            if (response.ok === true) {
+                const todos = await response.json();
+                const rows = document.querySelector("tbody");
+
+                todos.forEach(todo => rows.append(row(todo)));
+            }
+        }
+
+        async function GetTodo(id) {
+            const response = await fetch(`/ToDos/${id}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok === true) {
+                const todo = await response.json();
+                document.getElementById("todoId").value = todo.id;
+                document.getElementById("todoName").value = todo.name;
+                document.getElementById("todoPriority").value = todo.priority;
+                document.getElementById("todoDeadline").value = todo.deadline;
+                document.getElementById("todoIsFinished").value = todo.isfinished;
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+
+        }
+
+        async function createToDoFor(todoName, todoPriority, todoDeadline, todoIsFinished) {
+            isfinishedbool = todoIsFinished == "true" ? true : false;
+            const response = await fetch("/ToDos", {
+                method: "POST",
+                headers: {
+                    "Accept": "application/json", "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name: todoName,
+                    prioriry: todoPriority,
+                    deadline: todoDeadline,
+                    isFinished: isfinishedbool
+                })
+            });
+            if (response.ok === true) {
+                const todo = await response.json();
+                document.querySelector("tbody").append(row(todo))
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+
+        async function editToDoFor(todoId, todoName, todoPriority, todoDeadline, todoIsFinished) {
+            const response = await fetch("/ToDos", {
+                method: "PUT",
+                headers: {
+                    "Accept": "application/json", "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: todoId,
+                    name: todoName,
+                    prioriry: todoPriority,
+                    deadline: todoDeadline,
+                    isFinished: todoIsFinished
+                })
+            });
+
+            if (response.ok === true) {
+                const todo = await response.json();
+                document.querySelector(`tr[data-rowid='${todo.id}']`).replaceWith(row(todo));
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+
+        async function DeleteTodo(id) {
+            const response = await fetch(`/ToDos/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok === true) {
+                const todo = await response.json();
+                document.querySelector(`tr[data-rowid='${todo.id}']`).remove();
+            }
+            else {
+                const error = await response.json();
+                console.log(error.message);
+            }
+        }
+
+        function reset() {
+            document.getElementById("todoId").value = "";
+            document.getElementById("todoName").value = "";
+            document.getElementById("todoPriority").value = "";
+            document.getElementById("todoDeadline").value = "";
+            document.getElementById("todoIsFinished").value = "";
+        }
+
+        function row(todo) {
+
+            const tr = document.createElement("tr");
+
+            tr.setAttribute("data-rowid", todo.id);
+
+            const nametd = document.createElement("td");
+            nametd.append(todo.name);
+            tr.append(nametd);
+
+            const prioritytd = document.createElement("td");
+            prioritytd.append(todo.prioriry);
+            tr.append(prioritytd);
+
+            const deadlinetd = document.createElement("td");
+            deadlinetd.append(todo.deadline);
+            tr.append(deadlinetd);
+
+            const isFinishedtd = document.createElement("td");
+            isFinishedtd.append(todo.isfinished);
+            tr.append(isFinishedtd);
+
+
+            const linksTd = document.createElement("td");
+
+            const editLink = document.createElement("button");
+            editLink.append("Edit");
+            editLink.addEventListener("click", async () => await GetTodo(todo.id));
+            linksTd.append(editLink);
+
+            const removeLink = document.createElement("button");
+            removeLink.append("Remove");
+            removeLink.addEventListener("click", async () => await DeleteTodo(todo.id));
+            linksTd.append(removeLink);
+
+            tr.appendChild(linksTd);
+
+            return tr;
+        }
+
+        document.getElementById("saveBtn").addEventListener("click", async () => {
+            const id = document.getElementById("todoId").value;
+            const name = document.getElementById("todoName").value;
+            const priority = document.getElementById("todoPriority").value;
+            const deadline = document.getElementById("todoDeadline").value;
+            const isfinished = document.getElementById("todoIsFinished").value;
+            if (id === "") {
+                await createToDoFor(name, priority, deadline, isfinished);
+            }
+            else {
+                await editToDoFor(id, name, priority, deadline, isfinished);
+            }
+            reset();
+        });
+
+        GetToDos();
+
+    </script>
+</body>
+</html>
