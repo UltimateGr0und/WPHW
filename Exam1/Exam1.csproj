@@ -188,6 +188,7 @@
     <Content Include="Views\Customer\CreateProductInfo.cshtml" />
     <Content Include="Views\Customer\ConfirmOrder.cshtml" />
     <Content Include="Views\Shared\Unauthorized.cshtml" />
+    <Content Include="Views\Shared\AdminsLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
