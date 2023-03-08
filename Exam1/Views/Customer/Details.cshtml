@@ -1,21 +1,78 @@
 ﻿@model Exam1.Models.ProductInfo
 
 @{
+    if (ViewBag.User == null)
+    {
+        Layout = "~/Views/Shared/Unauthorized.cshtml";
+    }
     ViewBag.Title = "Details";
 }
 
-<h2>@Model.Name</h2>
-<h4>Price: @Model.Price Available: @Model.TotalAmount</h4>
-    <p>@Model.Description</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <h2>@Model.Name @(Model.IsAuction=="Auction"?"(Auction)":"")</h2>
+            <p>@Model.Description</p>
+        </div>
+        <div class="col-md-5">
+            <div class="row">
+                <img class="col-md-12" src="@Model.Photo" alt="Alternate Text" />
+                <div class="col-md-12">
+                    <ul style="list-style-type:none;">
+                        <li>@Model.Price$</li>
+                        <li>@Model.Seller.Username</li>
+                        <li>@Model.TotalAmount left</li>
+                    </ul>
+                </div>
+                @if (Model.IsAuction == "auction")
+                {
+                    <form class="col-md-10" action="/customer/AddApplicant" method="post">
+                        <input type="hidden" value="@Model.Id" name="id" />
+                        <input type="number" name="price" value="@Model.Price" />
+                        <input type="submit" value="make a bet" />
+                    </form>
+                }
+                else
+                {
+                    <form class="col-md-10" action="/customer/AddToBasket" method="post">
+                        <input type="hidden" value="@Model.Id" name="id" />
+                        <input type="number" name="amount" value="1" />
+                        <input type="submit" value="buy" />
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
-    <form action="AddToBasket" method="post">
-        <input type="hidden" value="@Model.Id" name="id"/>
-        <input type="number" name="amount" value="1"/>
-        <input type="submit" value="buy"/>
-    </form>
+<br />
 
-    @Html.ActionLink("buy", "AddToBasket", "Customer", new { Model.Id }, null)
+<h3>Write comment</h3>
+<form action="/customer/AddComment" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="@Model.Id" name="id" />
+    <input type="text" name="text" value="" />
+    <input type="submit" value="send" />
+</form>
 
 
+@if (Model.Comments.Any())
+{
+    <h3>All comments</h3>
+    <ul>
+        @foreach (var c in Model.Comments)
+        {
+            <li>
+                <p>@c.Text</p>
+            </li>
+        }
+    </ul>
+}
+<h4>There arent any comments yet</h4>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
 
 

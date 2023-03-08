@@ -24,8 +24,10 @@ namespace Exam1.Models
         [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Password should contain at least 4 characters or numbers without special symbols")]
         public string Password { get; set; }
         public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public virtual ICollection<ProductInfo> ProductsToSell { get; set; } = new List<ProductInfo>();
         public virtual ICollection<Product> ProductsToBuy { get; set; } = new List<Product>();
+        public virtual ICollection<ProductInfo> AuctionLots { get; set; } = new List<ProductInfo>();
         public AccountType AccountType { get; set; }
         public Account() { }
     }

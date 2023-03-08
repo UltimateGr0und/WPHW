@@ -112,5 +112,12 @@ namespace Exam1.Controllers
             }
             return RedirectToAction("Index");
         }
+        public async Task<ActionResult> LogOut()
+        {
+            var res = db.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress);
+            db.Sessions.RemoveRange(res);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -1,19 +1,70 @@
-﻿@model Exam1.Models.Account
+﻿@model Exam1.Models.MarketModelView
 
 @{
+    if (Model.User == null)
+    {
+        Layout = "~/Views/Shared/Unauthorized.cshtml";
+    }
     ViewBag.Title = "Index";
 }
 
-<h2>Welcome @Model.Username</h2>
-@Html.ActionLink("Personal cabinet","PersonalCabinet")
-@Html.ActionLink("Basket","Basket")
+<div class="page-header">
+    <h2>Welcome</h2>
+    @if (Model.User != null)
+    {
+        <h3>@Model.User.Username</h3>
+    }
+</div>
 
-<h3>All products</h3>
-<ul>
-    @foreach (var product in new Exam1.Models.AccountDBContext().ProductInfos.Where(p=>p.TotalAmount>0))
-	{
-        <li><h4>@product.Name</h4> <i>@product.Price$</i> @Html.ActionLink("buy", "Details","Customer",new { product.Id },null) <br/>
-        @product.TotalAmount left</li>
-	}
-</ul>
+
+<form class="form-inline" action="/customer/index">
+    <input type="hidden" name="Category" value="@Model.Category" />
+    <div class="form-group mx-sm-3 mb-2">
+        <label for="inputPassword2" class="sr-only">Password</label>
+        <input type="text" name="SearchRequest" value="@Model.SearchRequest" class="form-control rounded" />
+    </div>
+    <button type="submit" value="search" class="btn btn-outline-primary">Search</button>
+</form>
+
+<h4>Products</h4>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <ul class="list-group">
+                @foreach (var category in Model.Categories)
+                {
+                    if (category==Model.Category){<li class="list-group-item"> @Html.ActionLink(category, "Index", "Customer", new { Category = category }, null)</li>
+                    }else {<li class="list-group-item"> @Html.ActionLink(category, "Index", "Customer", new { Category = category }, null)</li>}
+                }
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                @foreach (var product in Model.products)
+                {
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>@product.Name</h4>
+                            <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
+                            @Html.ActionLink("buy", "Details", "Customer", new { product.Id }, null)
+                        </div>
+                        <div class="col-md-3">
+                            <ul style="list-style-type:none;">
+                                <li>@product.Price$</li>
+                                <li>@product.Seller.Username</li>
+                                <li>@product.TotalAmount left</li>
+                            </ul>
+                        </div>
+                            <img class="col-md-3 img-rounded" src="@product.Photo" alt="Alternate Text" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-group">
+    @Html.PageLinks(Model.PageInfo, x => Url.Action("index", new { Page = x, Category = Model.Category, SearchRequest = Model.SearchRequest }))
+</div>
 

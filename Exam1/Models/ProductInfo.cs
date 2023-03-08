@@ -16,9 +16,12 @@ namespace Exam1.Models
         [MaxLength(30,ErrorMessage = "Too long product name")]
         [RegularExpression("^(?!\\s)(?!.*\\s$)(?=.*[a-zA-Z0-9])[a-zA-Z0-9 '~?!]{2,}$",ErrorMessage = "Unacceptable product name")]
         public string Name { get; set; }
-        [Required(ErrorMessage = "Descrotption is required")]
+        [Required(ErrorMessage = "Description is required")]
         [MaxLength(400,ErrorMessage = "Too long description")]
         public string Description { get; set; }
+        [Required(ErrorMessage = "Category is required")]
+        public string Category { get; set; }
+        public string Photo { get; set; } = "https://whey.kz/wp-content/uploads/2020/11/placeholder.png";
         [Required(ErrorMessage = "Price is required")]
         [Range(0,double.MaxValue,ErrorMessage = "Invalid price")]
         public double Price { get; set; }
@@ -26,7 +29,10 @@ namespace Exam1.Models
         [Range(0, double.MaxValue, ErrorMessage = "Invalid amount of available products")]
         [DisplayName("Available")]
         public int TotalAmount { get; set; }
+        public string IsAuction { get; set; } = "product";
+        public virtual ICollection<Account> Applicants { get; set; }
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+        public virtual ICollection<Comment> Comments { get; set; }  =new List<Comment>();
         public virtual Account Seller { get; set; }
     }
 }
