@@ -12,9 +12,9 @@
     <div class="row">
         @for (int i = 0; i < 12; i++)
         {
-            <div class="col-md-1" style="height:300px">
-                <div style="margin:15px;height:@ViewBag.cValues[i].ToString()px;width:30px;bottom:30px" class="bg-primary"></div>
-                <p style="bottom:0">@ViewBag.Categories[i]</p>
+            <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1" style="height:300px">
+                <div style="position:absolute; width:30px;bottom:30px;margin:15px;height:@ViewBag.cValues[i].ToString()px" class="bg-primary"></div>
+                <p style="position: absolute; bottom: 0">@ViewBag.Categories[i]</p>
             </div>
         }
     </div>

@@ -214,7 +214,7 @@ namespace Exam1.Controllers
         [AuthetificationFilter]
         public async Task<ActionResult> CreateProductInfo()
         {
-            ViewBag.Categories = new SelectList(db.Categories, "Id", "Name");
+            ViewBag.Categories = new SelectList(db.Categories, "Name", "Name");
             ViewBag.Statuses = new SelectList(new List<string> {"product","auction"});
             return View();
         }
