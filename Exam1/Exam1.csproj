@@ -127,7 +127,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\ProductInfoesController.cs" />
     <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="Filters\AuthetificationFilter.cs" />
     <Compile Include="Global.asax.cs">
@@ -189,6 +191,16 @@
     <Content Include="Views\Customer\ConfirmOrder.cshtml" />
     <Content Include="Views\Shared\Unauthorized.cshtml" />
     <Content Include="Views\Shared\AdminsLayout.cshtml" />
+    <Content Include="Views\Admin\Create.cshtml" />
+    <Content Include="Views\Admin\Delete.cshtml" />
+    <Content Include="Views\Admin\Details.cshtml" />
+    <Content Include="Views\Admin\Edit.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\ProductInfoes\Create.cshtml" />
+    <Content Include="Views\ProductInfoes\Delete.cshtml" />
+    <Content Include="Views\ProductInfoes\Details.cshtml" />
+    <Content Include="Views\ProductInfoes\Edit.cshtml" />
+    <Content Include="Views\ProductInfoes\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
