@@ -16,13 +16,13 @@ namespace Exam1.Controllers
         private AccountDBContext db = new AccountDBContext();
 
         // GET: Admin
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> AccountIndex()
         {
             return View(await db.Accounts.ToListAsync());
         }
 
         // GET: Admin/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public async Task<ActionResult> AccountDetails(int? id)
         {
             if (id == null)
             {
@@ -37,7 +37,7 @@ namespace Exam1.Controllers
         }
 
         // GET: Admin/Create
-        public ActionResult Create()
+        public ActionResult AccountCreate()
         {
             return View();
         }
@@ -47,20 +47,20 @@ namespace Exam1.Controllers
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "Id,Username,Password,AccountType")] Account account)
+        public async Task<ActionResult> AccountCreate([Bind(Include = "Id,Username,Password,AccountType")] Account account)
         {
             if (ModelState.IsValid)
             {
                 db.Accounts.Add(account);
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("AccountIndex");
             }
 
             return View(account);
         }
 
         // GET: Admin/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public async Task<ActionResult> AccountEdit(int? id)
         {
             if (id == null)
             {
@@ -79,19 +79,19 @@ namespace Exam1.Controllers
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "Id,Username,Password,AccountType")] Account account)
+        public async Task<ActionResult> AccountEdit([Bind(Include = "Id,Username,Password,AccountType")] Account account)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(account).State = EntityState.Modified;
                 await db.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("AccountIndex");
             }
             return View(account);
         }
 
         // GET: Admin/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public async Task<ActionResult> AccountDelete(int? id)
         {
             if (id == null)
             {
@@ -108,14 +108,112 @@ namespace Exam1.Controllers
         // POST: Admin/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public async Task<ActionResult> AccountDeleteConfirmed(int id)
         {
             Account account = await db.Accounts.FindAsync(id);
             db.Accounts.Remove(account);
             await db.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return RedirectToAction("AccountIndex");
+        }
+        public async Task<ActionResult> ProductIndex()
+        {
+            return View(await db.ProductInfos.ToListAsync());
         }
 
+        // GET: ProductInfoes/Details/5
+        public async Task<ActionResult> ProductDetails(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ProductInfo productInfo = await db.ProductInfos.FindAsync(id);
+            if (productInfo == null)
+            {
+                return HttpNotFound();
+            }
+            return View(productInfo);
+        }
+
+        // GET: ProductInfoes/Create
+        public ActionResult ProductCreate()
+        {
+            return View();
+        }
+
+        // POST: ProductInfoes/Create
+        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
+        // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ProductCreate([Bind(Include = "Id,Name,Description,Category,Photo,Price,TotalAmount,IsAuction")] ProductInfo productInfo)
+        {
+            if (ModelState.IsValid)
+            {
+                db.ProductInfos.Add(productInfo);
+                await db.SaveChangesAsync();
+                return RedirectToAction("ProductIndex");
+            }
+
+            return View(productInfo);
+        }
+
+        // GET: ProductInfoes/Edit/5
+        public async Task<ActionResult> ProductEdit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ProductInfo productInfo = await db.ProductInfos.FindAsync(id);
+            if (productInfo == null)
+            {
+                return HttpNotFound();
+            }
+            return View(productInfo);
+        }
+
+        // POST: ProductInfoes/Edit/5
+        // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
+        // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ProductEdit([Bind(Include = "Id,Name,Description,Category,Photo,Price,TotalAmount,IsAuction")] ProductInfo productInfo)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(productInfo).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return RedirectToAction("ProductIndex");
+            }
+            return View(productInfo);
+        }
+
+        // GET: ProductInfoes/Delete/5
+        public async Task<ActionResult> ProductDelete(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ProductInfo productInfo = await db.ProductInfos.FindAsync(id);
+            if (productInfo == null)
+            {
+                return HttpNotFound();
+            }
+            return View(productInfo);
+        }
+
+        // POST: ProductInfoes/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ProductDeleteConfirmed(int id)
+        {
+            ProductInfo productInfo = await db.ProductInfos.FindAsync(id);
+            db.ProductInfos.Remove(productInfo);
+            await db.SaveChangesAsync();
+            return RedirectToAction("ProductIndex");
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
