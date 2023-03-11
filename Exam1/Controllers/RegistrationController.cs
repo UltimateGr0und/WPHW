@@ -55,7 +55,7 @@ namespace Exam1.Controllers
                 switch (type)
                 {
                     case AccountType.Admin:
-                        return RedirectToAction("AdminMaster");
+                        return RedirectToAction("AccountIndex","Admin");
                     case AccountType.Customer:
                         return RedirectToAction("Index","Customer");
                     default:
