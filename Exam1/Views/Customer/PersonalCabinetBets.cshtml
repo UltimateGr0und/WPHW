@@ -1,0 +1,40 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "PersonalCabinetBets";
+}
+
+<h2>Personal Cabinet</h2>
+
+@Html.ActionLink("Products", "PersonalCabinet")
+@Html.ActionLink("Auctions", "PersonalCabinetBetsAuctions")
+
+<h3>Your bets</h3>
+<div class="container">
+    @foreach (var product in Model.AuctionLots)
+    {
+        <div class="row">
+            <img class="col-md-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7">
+                <h5>@product.Name</h5>
+                <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
+            </div>
+            <div class="col-md-3">
+                @if (product.Applicants.Last() == Model)
+                {
+                    <h6>Your bet is relevant</h6>
+                    <p>Current price @product.Price$</p>
+                }
+                else
+                {
+                    <h6>Your bet is irrelevant</h6>
+                    <p>Current price @product.Price$</p>
+                    @Html.ActionLink("Raise the bet", "Details", "Customer", new { product.Id }, null)
+                }
+            </div>
+        </div>
+
+        <li>@product.Name @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)@Html.ActionLink("Delete", "DeleteApplicant", "Customer", new { product.Id }, null)</li>
+    }
+</div>
+

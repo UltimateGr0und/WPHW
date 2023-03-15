@@ -201,6 +201,8 @@
     <Content Include="Views\Admin\ProductDetails.cshtml" />
     <Content Include="Views\Admin\ProductEdit.cshtml" />
     <Content Include="Views\Admin\ProductIndex.cshtml" />
+    <Content Include="Views\Customer\PersonalCabinetAuctions.cshtml" />
+    <Content Include="Views\Customer\PersonalCabinetBets.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

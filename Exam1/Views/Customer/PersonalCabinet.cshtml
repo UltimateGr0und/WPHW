@@ -4,9 +4,10 @@
     ViewBag.Title = "PersonalCabinet";
 }
 
-<h2>PersonalCabinet</h2>
-@Html.ActionLink("Add new product","CreateProductInfo")
+<h2>Personal Cabinet</h2>
 
+@Html.ActionLink("Auctions","PersonalCabinetAuctions")
+@Html.ActionLink("Bets","PersonalCabinetBets")
 
 <div class="container">
     <div class="row">
@@ -20,26 +21,13 @@
     </div>
 </div>
 
-<h4>Your auctions</h4>
-<ul>
-    @foreach (var product in Model.ProductsToSell.Where(p=>p.IsAuction=="auction"))
-    {
-        <li>@product.Name @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)@Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, null)</li>
-    }
-</ul>
+@Html.ActionLink("Add new product", "CreateProductInfo")
+
 
 <h4>Your products</h4>
 <ul>
     @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction != "auction"))
     {
         <li>@product.Name @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)@Html.ActionLink("Delete", "DeleteProductInfo", "Customer", new { product.Id }, null)</li>
-    }
-</ul>
-
-<h4>Your bets</h4>
-<ul>
-    @foreach (var product in Model.AuctionLots)
-    {
-        <li>@product.Name @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)@Html.ActionLink("Delete", "DeleteApplicant", "Customer", new { product.Id }, null)</li>
     }
 </ul>

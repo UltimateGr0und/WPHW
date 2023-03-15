@@ -140,6 +140,21 @@ namespace Exam1.Controllers
             return View(account);
         }
         [AuthetificationFilter]
+        public async Task<ActionResult> PersonalCabinetAuctions()
+        {
+            Account account = RegistratedAccount();
+
+            return View(account);
+        }
+        [AuthetificationFilter]
+        public async Task<ActionResult> PersonalCabinetBets()
+        {
+            Account account = RegistratedAccount();
+
+            return View(account);
+        }
+
+        [AuthetificationFilter]
         public async Task<ActionResult> DeleteApplicant(int id)
         {
             Account account = RegistratedAccount();

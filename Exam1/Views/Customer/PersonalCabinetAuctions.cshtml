@@ -1,0 +1,20 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "PersonalCabinetAuctions";
+}
+
+<h2>Personal Cabinet</h2>
+
+@Html.ActionLink("Products", "PersonalCabinet")
+@Html.ActionLink("Bets", "PersonalCabinetBets")
+
+<h3>Your auctions</h3>
+<ul>
+    @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction == "auction"))
+    {
+        <li>@product.Name @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)@Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, null)</li>
+    }
+</ul>
+
+
