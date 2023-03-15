@@ -67,18 +67,17 @@ namespace Exam1.Controllers
             Account account = RegistratedAccount();
 
             ProductInfo productInfo = db.ProductInfos.Find(id);
-            if (productInfo.Price< price)
+            if (productInfo.Price < price)
             {
-                RedirectToAction("Index");
-            }
-            productInfo.Price = price;
-            if (!productInfo.Applicants.Contains(account))
-            {
-                productInfo.Applicants.Add(account);
-                account.AuctionLots.Add(productInfo);
-            }            
+                productInfo.Price = price;
+                if (!productInfo.Applicants.Contains(account))
+                {
+                    productInfo.Applicants.Add(account);
+                    account.AuctionLots.Add(productInfo);
+                }
 
-            db.SaveChanges();            
+                db.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
         
@@ -177,7 +176,7 @@ namespace Exam1.Controllers
             account.ProductsToSell.Remove(product);
             db.ProductInfos.Remove(product);
             db.SaveChanges();
-            return RedirectToAction("PersonalCabinet");
+            return RedirectToAction("PersonalCabinetAuctions");
         }
         [AuthetificationFilter]
         public async Task<ActionResult> UpdateProductInfo(int id)
@@ -242,6 +241,7 @@ namespace Exam1.Controllers
 
             if (ModelState.IsValid)
             {
+                productInfo.Photo = productInfo.Photo == null ? "https://whey.kz/wp-content/uploads/2020/11/placeholder.png" : productInfo.Photo;
                 db.ProductInfos.Add(productInfo);
                 account.ProductsToSell.Add(productInfo);
                 productInfo.Seller = account;

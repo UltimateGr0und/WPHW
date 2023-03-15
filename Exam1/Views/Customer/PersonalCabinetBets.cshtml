@@ -7,9 +7,13 @@
 <h2>Personal Cabinet</h2>
 
 @Html.ActionLink("Products", "PersonalCabinet")
-@Html.ActionLink("Auctions", "PersonalCabinetBetsAuctions")
+@Html.ActionLink("Auctions", "PersonalCabinetAuctions")
 
 <h3>Your bets</h3>
+@if (!Model.AuctionLots.Any())
+{
+    <p>You dont have any bets yet</p>
+}
 <div class="container">
     @foreach (var product in Model.AuctionLots)
     {
@@ -34,7 +38,6 @@
             </div>
         </div>
 
-        <li>@product.Name @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)@Html.ActionLink("Delete", "DeleteApplicant", "Customer", new { product.Id }, null)</li>
     }
 </div>
 
