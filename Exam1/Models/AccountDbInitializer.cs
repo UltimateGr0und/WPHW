@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
+using LoremNET;
 
 namespace Exam1.Models
 {
@@ -29,9 +30,14 @@ namespace Exam1.Models
 
             Account account = new Account() { Username = "customer", Password = "customer1", AccountType = AccountType.Customer };
             context.Accounts.Add(account);
+
+            Random random = new Random();
             for (int i = 0; i < 15; i++)
             {
-                ProductInfo productInfo = new ProductInfo { Name="Product"+i.ToString(), Price=5.95, Description = "blablablablablabla", TotalAmount = 99, Category="other"};
+                string name = Lorem.Words(3);
+                string description = String.Join(",",Lorem.Paragraphs(10, 3, 3).ToArray());
+                string category = categories.ElementAt(random.Next(0,11)).Name;
+                ProductInfo productInfo = new ProductInfo { Name=name, Price=random.Next(1000), Description = description, TotalAmount = random.Next(1000), Category=category};
                 context.ProductInfos.Add(productInfo);
 
                 account.ProductsToSell.Add(productInfo);

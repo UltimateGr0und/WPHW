@@ -13,11 +13,10 @@ namespace Exam1.Models
         [HiddenInput(DisplayValue =false)]
         public int Id { get; set; }
         [Required(ErrorMessage = "Product name is required")]
-        [MaxLength(30,ErrorMessage = "Too long product name")]
-        [RegularExpression("^(?!\\s)(?!.*\\s$)(?=.*[a-zA-Z0-9])[a-zA-Z0-9 '~?!]{2,}$",ErrorMessage = "Unacceptable product name")]
+        [MaxLength(100,ErrorMessage = "Too long product name")]
         public string Name { get; set; }
         [Required(ErrorMessage = "Description is required")]
-        [MaxLength(400,ErrorMessage = "Too long description")]
+        [MaxLength(4000,ErrorMessage = "Too long description")]
         public string Description { get; set; }
         [Required(ErrorMessage = "Category is required")]
         public string Category { get; set; }
