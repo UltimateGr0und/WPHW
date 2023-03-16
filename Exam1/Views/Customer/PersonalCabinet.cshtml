@@ -6,8 +6,13 @@
 
 <h2>Personal Cabinet</h2>
 
-@Html.ActionLink("Auctions", "PersonalCabinetAuctions")
-@Html.ActionLink("Bets", "PersonalCabinetBets")
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Products</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Auctions", "PersonalCabinetAuctions")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Bets", "PersonalCabinetBets")</li>
+    </ol>
+</nav>
 
 <div class="container">
     <div class="row">
@@ -21,36 +26,31 @@
     </div>
 </div>
 
-@Html.ActionLink("Add new product", "CreateProductInfo")
+@Html.ActionLink("Add new product", "CreateProductInfo", null, new {@class="btn btn-primary"})
 
 
 <h4>Your products</h4>
 @if (!Model.ProductsToSell.Where(p => p.IsAuction != "auction").Any())
 {
-    <p>You dont have any products to sell yet</p>
+    <div class="alert alert-info" role="alert">You dont have any products to sell yet</div>
 }
 <div class="container">
     @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction != "auction"))
     {
         <div class="row">
-            <img class="col-md-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
-            <div class="col-md-7">
+            <img class="col-md-2 col-sm-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7 col-sm-7">
                 <h5>@product.Name</h5>
                 <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
             </div>
-            <div class="col-md-3">
-                <p>Current price @product.Price</p>
+            <div class="col-md-3 col-sm-3">
+                <p>Price @product.Price</p>
                 @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Delete", "DeleteProductInfo", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, null)
             </div>
         </div>
-
+        <hr />
     }
 </div>
-<ul>
-    @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction != "auction"))
-    {
-        <li>@product.Name @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)@Html.ActionLink("Delete", "DeleteProductInfo", "Customer", new { product.Id }, null)</li>
-    }
-</ul>
+

@@ -313,6 +313,14 @@ namespace Exam1.Controllers
             db.SaveChanges();
             return View();
         }
+        [AuthetificationFilter]
+        public async Task<ActionResult> ClearOrder()
+        {
+            Account account = RegistratedAccount();
+            db.Products.RemoveRange(account.ProductsToBuy);
+            await db.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
 
     }
 }

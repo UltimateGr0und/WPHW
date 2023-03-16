@@ -6,24 +6,29 @@
 
 <h2>Personal Cabinet</h2>
 
-@Html.ActionLink("Products", "PersonalCabinet")
-@Html.ActionLink("Auctions", "PersonalCabinetAuctions")
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">@Html.ActionLink("Products", "PersonalCabinet")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Auctions", "PersonalCabinetAuctions")</li>
+        <li class="breadcrumb-item active" aria-current="page">Bets</li>
+    </ol>
+</nav>
 
 <h3>Your bets</h3>
 @if (!Model.AuctionLots.Any())
 {
-    <p>You dont have any bets yet</p>
+    <div class="alert alert-info" role="alert">You dont have any bets yet</div>
 }
 <div class="container">
     @foreach (var product in Model.AuctionLots)
     {
         <div class="row">
-            <img class="col-md-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
-            <div class="col-md-7">
+            <img class="col-md-2 col-sm-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7 col-sm-7">
                 <h5>@product.Name</h5>
                 <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3">
                 @if (product.Applicants.Last() == Model)
                 {
                     <h6>Your bet is relevant</h6>
@@ -37,7 +42,7 @@
                 }
             </div>
         </div>
-
+        <hr />
     }
 </div>
 

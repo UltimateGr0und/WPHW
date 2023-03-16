@@ -10,23 +10,21 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-7 col-sm-6">
             <h2>@Model.Name @(Model.IsAuction=="Auction"?"(Auction)":"")</h2>
             <p>@Model.Description</p>
         </div>
-        <div class="col-md-5">
+        <div class="col-md-5 col-sm-6">
             <div class="row">
-                <img class="col-md-12" src="@Model.Photo" alt="Alternate Text" />
-                <div class="col-md-12">
-                    <ul style="list-style-type:none;">
-                        <li>@Model.Price$</li>
-                        <li>@Model.Seller.Username</li>
-                        <li>@Model.TotalAmount left</li>
-                    </ul>
+                <img class="col-md-12 col-sm-12" src="@Model.Photo" alt="Alternate Text" />
+                <div class="col-md-12 col-sm-12">
+                    <h4>Price @Model.Price$</h4>
+                    <h4>Seller @Model.Seller.Username</h4>
+                    <h4>@Model.TotalAmount left</h4>
                 </div>
                 @if (Model.IsAuction == "auction")
                 {
-                    <form class="col-md-10" action="/customer/AddApplicant" method="post">
+                    <form class="col-md-10 col-sm-10" action="/customer/AddApplicant" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
                         <input type="number" name="price" value="@Model.Price" />
                         <input type="submit" value="make a bet" />
@@ -34,7 +32,7 @@
                 }
                 else
                 {
-                    <form class="col-md-10" action="/customer/AddToBasket" method="post">
+                    <form class="col-md-10 col-sm-10" action="/customer/AddToBasket" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
                         <input type="number" name="amount" value="1" />
                         <input type="submit" value="buy" />

@@ -6,32 +6,41 @@
 
 <h2>Personal Cabinet</h2>
 
-@Html.ActionLink("Products", "PersonalCabinet")
-@Html.ActionLink("Bets", "PersonalCabinetBets")
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">@Html.ActionLink("Products", "PersonalCabinet")</li>
+        <li class="breadcrumb-item active" aria-current="page">Auctions</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Bets", "PersonalCabinetBets")</li>
+    </ol>
+</nav>
+
 
 <h3>Your auctions</h3>
-@Html.ActionLink("Add new product", "CreateProductInfo")
+@Html.ActionLink("Add new product", "CreateProductInfo", null, new { @class = "btn btn-primary" })
+<hr/>
+
 @if (!Model.ProductsToSell.Where(p => p.IsAuction == "auction").Any())
 {
-    <p>You dont have any auctions yet</p>
+    <div class="alert alert-info" role="alert">You dont have any auctions yet</div>
 }
 
 <div class="container">
     @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction == "auction"))
     {
         <div class="row">
-            <img class="col-md-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
-            <div class="col-md-7">
+            <img class="col-md-2 col-sm-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7 col-sm-7">
                 <h5>@product.Name</h5>
                 <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 col-sm-3">
                 <p>Current price @product.Price</p>
-                @Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, null)
+                @Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, new {@class="btn btn-danger"})
                 @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, null)
             </div>
         </div>
+        <hr/>
 
     }
 </div>

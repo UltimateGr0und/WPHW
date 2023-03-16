@@ -5,19 +5,31 @@
 }
 
 <h2>Basket</h2>
-@Html.ActionLink("Personal cabinet", "PersonalCabinet")
-@Html.ActionLink("Main page", "Index")
 
-<ul>
+<div class="container">
     @foreach (var product in Model.ProductsToBuy)
     {
-        <li>@product.ProductInfo.Name @product.ProductInfo.Price$ @Html.ActionLink("details", "Details", "Customer", new { product.ProductInfo.Id }, null) @Html.ActionLink("remove", "RemoveFromBasket", "Customer", new { product.Id }, null)</li>
+        <div class="row">
+            <img class="col-md-2 h-100 d-inline-block" src="@product.ProductInfo.Photo" alt="Alternate Text" />
+            <div class="col-md-7">
+                <h5>@product.ProductInfo.Name</h5>
+                <p>@(product.ProductInfo.Description.Length>150?product.ProductInfo.Description.Substring(0,150)+"...":product.ProductInfo.Description)</p>
+            </div>
+            <div class="col-md-3">
+                <p>Price @product.ProductInfo.Price</p>
+                <p>Amount @product.Amount</p>
+                @Html.ActionLink("details", "Details", "Customer", new { product.ProductInfo.Id }, new { @class = "btn" })
+                @Html.ActionLink("remove", "RemoveFromBasket", "Customer", new { product.Id }, new {@class= "btn btn-info" })
+            </div>
+        </div>
+
     }
-</ul>
+</div>
 
-<h4>Total: @Model.ProductsToBuy.Select(p=>p.ProductInfo.Price).Sum()$</h4>
+<h4>Total: @Model.ProductsToBuy.Select(p=>p.ProductInfo.Price*p.Amount).Sum()$</h4>
 
-@Html.ActionLink("Confirm order","ConfirmOrder");
+@Html.ActionLink("Confirm order","ConfirmOrder", null, new { @class = "btn btn-primary" })
+@Html.ActionLink("Clear", "ClearOrder", null, new { @class = "btn btn-danger" })
 
 
 
