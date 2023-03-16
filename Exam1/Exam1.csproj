@@ -203,6 +203,7 @@
     <Content Include="Views\Admin\ProductIndex.cshtml" />
     <Content Include="Views\Customer\PersonalCabinetAuctions.cshtml" />
     <Content Include="Views\Customer\PersonalCabinetBets.cshtml" />
+    <Content Include="Views\Customer\AddProductPhoto.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

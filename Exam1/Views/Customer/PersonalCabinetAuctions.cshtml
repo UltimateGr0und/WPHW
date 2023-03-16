@@ -29,6 +29,7 @@
                 <p>Current price @product.Price</p>
                 @Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)
+                @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, null)
             </div>
         </div>
 

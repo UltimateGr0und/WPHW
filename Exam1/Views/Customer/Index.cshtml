@@ -32,10 +32,10 @@
     <div class="row">
         <div class="col-md-2">
             <ul class="list-group">
+                <li class="list-group-item"> @Html.ActionLink("all", "Index", "Customer", new { Category = "all" }, null)</li>
                 @foreach (var category in Model.Categories)
                 {
-                    if (category==Model.Category){<li class="list-group-item"> @Html.ActionLink(category, "Index", "Customer", new { Category = category }, null)</li>
-                    }else {<li class="list-group-item"> @Html.ActionLink(category, "Index", "Customer", new { Category = category }, null)</li>}
+                    <li class="list-group-item"> @Html.ActionLink(category, "Index", "Customer", new { Category = category }, null)</li>
                 }
             </ul>
         </div>

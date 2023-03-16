@@ -21,6 +21,9 @@ namespace Exam1.Models
         public string Description { get; set; }
         [Required(ErrorMessage = "Category is required")]
         public string Category { get; set; }
+        [DataType(DataType.Upload)]
+        [Display(Name = "Upload File")]
+        [Required(ErrorMessage = "Please choose file to upload.")]
         public string Photo { get; set; } = "https://whey.kz/wp-content/uploads/2020/11/placeholder.png";
         [Required(ErrorMessage = "Price is required")]
         [Range(0,double.MaxValue,ErrorMessage = "Invalid price")]

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.IO;
+using System.Collections;
 
 namespace Exam1.Controllers
 {
@@ -248,6 +250,36 @@ namespace Exam1.Controllers
                 db.SaveChanges();
             }
 
+            return RedirectToAction("PersonalCabinet");
+        }
+
+        [AuthetificationFilter]
+        public async Task<ActionResult> AddProductPhoto(int id)
+        {
+            Account account = RegistratedAccount();
+            ProductInfo product = await db.ProductInfos.FindAsync(id);
+            if (account.ProductsToSell.Contains(product))
+            {
+                return View(product);
+            }
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        [AuthetificationFilter]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddProductPhoto(HttpPostedFileBase file,int id)
+        {
+
+            Account account = RegistratedAccount();
+            ProductInfo product = await db.ProductInfos.FindAsync(id);
+            if (account.ProductsToSell.Contains(product))
+            {
+                MemoryStream target = new MemoryStream();
+                file.InputStream.CopyTo(target);
+                byte[] data = target.ToArray();
+                product.Photo = $"data:{file.ContentType};base64,{Convert.ToBase64String(data)}";
+                await db.SaveChangesAsync();
+            }
             return RedirectToAction("PersonalCabinet");
         }
         [AuthetificationFilter]

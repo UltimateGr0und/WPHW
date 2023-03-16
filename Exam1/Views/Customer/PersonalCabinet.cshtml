@@ -11,7 +11,7 @@
 
 <div class="container">
     <div class="row">
-        @for (int i = 0; i < 12; i++)
+        @for (int i = 0; i < 11; i++)
         {
             <div class="col-md-1 col-lg-1 col-sm-1 col-xs-1" style="height:300px">
                 <div style="position:absolute; width:30px;bottom:30px;margin:15px;height:@ViewBag.cValues[i].ToString()px" class="bg-primary"></div>
@@ -42,6 +42,7 @@
                 <p>Current price @product.Price</p>
                 @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Delete", "DeleteProductInfo", "Customer", new { product.Id }, null)
+                @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, null)
             </div>
         </div>
 

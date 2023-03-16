@@ -10,7 +10,7 @@ namespace Exam1.Models
     {
         protected override void Seed(AccountDBContext context)
         {
-            List<Category> categories = new List<Category> { new Category("all"),
+            List<Category> categories = new List<Category> {
                 new Category("gadjets"),
                 new Category("electronic"),
                 new Category("computers"),
