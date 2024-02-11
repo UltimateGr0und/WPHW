@@ -103,7 +103,7 @@ namespace Exam1.Controllers
                         case PasswordVerificationResult.Failed:
                             //return RedirectToAction("SignIn");
                             return RedirectToAction("SignIn", new RouteValueDictionary(
-                                new { controller = "Registration", action = "SignIn", msg = "invalid password" }));
+                                new { controller = "Registration", action = "SignIn", msg = "invalid password or username" }));
 
                         case PasswordVerificationResult.SuccessRehashNeeded:
                             {
@@ -118,6 +118,11 @@ namespace Exam1.Controllers
 
                     }
 
+                }
+                else
+                {
+                    return RedirectToAction("SignIn", new RouteValueDictionary(
+                        new { controller = "Registration", action = "SignIn", msg = "invalid password or username" }));
                 }
             }
             return RedirectToAction("SignIn");

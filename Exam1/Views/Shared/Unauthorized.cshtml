@@ -28,13 +28,14 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container body-content" style="min-height: 78vh">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
-        </footer>
     </div>
+
+    <hr />
+    <footer>
+        <p style="padding:10px">&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

@@ -29,13 +29,19 @@
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    <div class="container body-content min-vh-100">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
-        </footer>
+
     </div>
+
+    <hr />
+    <footer>
+        <nav class="navbar fixed-bottom navbar-light bg-light">
+            <div class="container-fluid">
+                <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
+            </div>
+        </nav>
+    </footer>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
