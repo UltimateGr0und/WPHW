@@ -76,9 +76,8 @@ namespace Exam1.Controllers
                 return RedirectToAction("SignIn");
             }
         }
-        public async Task<ActionResult> SignIn(string msg=null)
+        public async Task<ActionResult> SignIn()
         {
-            ViewBag.Message = msg;
             return View();
         }
         [HttpPost]
@@ -101,10 +100,10 @@ namespace Exam1.Controllers
                                 return RedirectToAction("Index");
                             }
                         case PasswordVerificationResult.Failed:
-                            //return RedirectToAction("SignIn");
-                            return RedirectToAction("SignIn", new RouteValueDictionary(
-                                new { controller = "Registration", action = "SignIn", msg = "invalid password or username" }));
-
+                            {
+                                TempData["message"] = "invalid password or username";
+                                return RedirectToAction("SignIn");
+                            }
                         case PasswordVerificationResult.SuccessRehashNeeded:
                             {
                                 currentAccounts.First().Password = ph.HashPassword(account.Password);
@@ -121,8 +120,8 @@ namespace Exam1.Controllers
                 }
                 else
                 {
-                    return RedirectToAction("SignIn", new RouteValueDictionary(
-                        new { controller = "Registration", action = "SignIn", msg = "invalid password or username" }));
+                    TempData["message"] = "invalid password or username";
+                    return RedirectToAction("SignIn");  
                 }
             }
             return RedirectToAction("SignIn");
@@ -146,6 +145,11 @@ namespace Exam1.Controllers
                 account.Sessions.Add(session);
                 
                 db.SaveChanges();
+            }
+            else
+            {
+                TempData["message"] = "occupied username";
+                return RedirectToAction("SignUp");
             }
             return RedirectToAction("Index");
         }

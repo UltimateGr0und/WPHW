@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - приложение ASP.NET</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -19,17 +20,31 @@
                 </button>
                 @Html.ActionLink("Market", "Index", "Customer", new { area = "" }, new { @class = "navbar-brand" })
             </div>
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse ">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Customer")</li>
-                    <li>@Html.ActionLink("Cabinet", "PersonalCabinet", "Customer")</li>
-                    <li>@Html.ActionLink("Basket", "Basket", "Customer")</li>
-                    <li>@Html.ActionLink("Log out", "LogOut", "Registration")</li>
+                    @*<li>@Html.ActionLink("Cabinet", "PersonalCabinet", "Customer")</li>*@
+                    <li>
+                        <a href='@Url.Action("PersonalCabinet", "Customer")'>
+                            Cabinet&nbsp;<i class="bi bi-person-fill"></i>
+                        </a>
+                    </li>
+                    @*<li>@Html.ActionLink("Basket", "Basket", "Customer")</li>*@
+                    <li>
+                        <a href='@Url.Action("Basket", "Customer")'>
+                            Basket&nbsp;<i class="bi bi-basket-fill"></i>
+                        </a>
+                    </li>
+                    @*<li>@Html.ActionLink("Log out", "LogOut", "Registration")</li>*@
+                    <li>
+                        <a href='@Url.Action("LogOut", "Registration")'>
+                            Log out&nbsp;<i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="container body-content min-vh-100">
+    <div class="container body-content" style="min-height: 78vh">
         @RenderBody()
 
     </div>
@@ -43,8 +58,6 @@
         </nav>
     </footer>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 </html>
