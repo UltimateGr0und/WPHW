@@ -23,7 +23,7 @@ namespace Exam1.Controllers
             {
                 return db.Accounts.Where(
                 a => a.Sessions.Where(
-                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).Single();
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Where(s => s.EndTime> DateTime.UtcNow).Any()).Single();
             }
             catch (Exception)
             {

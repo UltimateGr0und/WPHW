@@ -21,7 +21,7 @@ namespace Exam1.Models
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         [MinLength(4,ErrorMessage = "Password shoul contain at least 4 characters or numbers without special symbols")]
-        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Password should contain at least 4 characters or numbers without special symbols")]
+        //[RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Password should contain at least 4 characters or numbers without special symbols")]
         public string Password { get; set; }
         public virtual ICollection<Session> Sessions { get; set; } = new List<Session>();
         public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();

@@ -4,7 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Exam1.Models;
+using Microsoft.AspNet.Identity;
 
 namespace Exam1.Controllers
 {
@@ -18,7 +20,7 @@ namespace Exam1.Controllers
             {
                 return db.Accounts.Where(
                 a => a.Sessions.Where(
-                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).Single();
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Where(s => s.EndTime > DateTime.UtcNow).Any()).Single();
             }
             catch (Exception)
             {
@@ -29,16 +31,18 @@ namespace Exam1.Controllers
         {
             return db.Accounts.Where(
                 a => a.Sessions.Where(
-                    s => s.Ip == HttpContext.Request.UserHostAddress).Any()).ToList();
+                    s => s.Ip == HttpContext.Request.UserHostAddress).Where(s => s.EndTime > DateTime.UtcNow).Any()).ToList();
         }
         private void FixRegistration()
         {
             List<Account> accounts = RegistratedAccounts();
             foreach (var account in accounts)
             {
-                foreach (var session in account.Sessions)
+                //var res = db.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Where(s => s.EndTime > DateTime.UtcNow);
+                //db.Sessions.RemoveRange(res);
+                foreach (var s in account.Sessions)
                 {
-                    db.Sessions.Remove(session);
+                    s.EndTime = DateTime.UtcNow;
                 }
             }
             db.SaveChanges();
@@ -48,7 +52,7 @@ namespace Exam1.Controllers
             //List<Account> accounts = db.Accounts.Where(a => a.IsLocked == true).ToList();
 
             List<Account> accounts = RegistratedAccounts();
-            if (accounts.Count == 1 /*&& accounts.First().Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First().EndTime<DateTime.Now*/)
+            if (accounts.Count == 1 /*&& accounts.First().Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).First().EndTime<DateTime.UtcNow*/)
             {
                 Account account = accounts.First();
                 AccountType type = account.AccountType;
@@ -72,8 +76,9 @@ namespace Exam1.Controllers
                 return RedirectToAction("SignIn");
             }
         }
-        public async Task<ActionResult> SignIn()
+        public async Task<ActionResult> SignIn(string msg=null)
         {
+            ViewBag.Message = msg;
             return View();
         }
         [HttpPost]
@@ -81,14 +86,38 @@ namespace Exam1.Controllers
         {
             if (ModelState.IsValid)
             {
-                List<Account> currentAccounts = db.Accounts.Where(a => (a.Username == account.Username && a.Password == account.Password)).ToList();
+                List<Account> currentAccounts = db.Accounts.Where(a => (a.Username == account.Username)).ToList();
                 if (currentAccounts.Count == 1)
                 {
-                    Session session = new Session() { Account = currentAccounts.First(), StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1), Ip = HttpContext.Request.UserHostAddress };
-                    db.Sessions.Add(session);
-                    currentAccounts.First().Sessions.Add(session);
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    PasswordHasher ph = new PasswordHasher();
+                    switch (ph.VerifyHashedPassword(currentAccounts.First().Password, account.Password))
+                    {
+                        case PasswordVerificationResult.Success:
+                            {
+                                Session session = new Session() { Account = currentAccounts.First(), StartTime = DateTime.UtcNow, EndTime = DateTime.UtcNow.AddHours(1), Ip = HttpContext.Request.UserHostAddress };
+                                db.Sessions.Add(session);
+                                currentAccounts.First().Sessions.Add(session);
+                                db.SaveChanges();
+                                return RedirectToAction("Index");
+                            }
+                        case PasswordVerificationResult.Failed:
+                            //return RedirectToAction("SignIn");
+                            return RedirectToAction("SignIn", new RouteValueDictionary(
+                                new { controller = "Registration", action = "SignIn", msg = "invalid password" }));
+
+                        case PasswordVerificationResult.SuccessRehashNeeded:
+                            {
+                                currentAccounts.First().Password = ph.HashPassword(account.Password);
+                                Session session = new Session() { Account = currentAccounts.First(), StartTime = DateTime.UtcNow, EndTime = DateTime.UtcNow.AddHours(1), Ip = HttpContext.Request.UserHostAddress };
+                                db.Sessions.Add(session);
+                                currentAccounts.First().Sessions.Add(session);
+                                db.SaveChanges();
+                                return RedirectToAction("Index");
+                            }
+
+
+                    }
+
                 }
             }
             return RedirectToAction("SignIn");
@@ -103,19 +132,26 @@ namespace Exam1.Controllers
             if (db.Accounts.Where(a => a.Username == account.Username).Count() == 0)
             {
                 account.AccountType = AccountType.Customer;
-                Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, Account = account, StartTime = DateTime.Now, EndTime = DateTime.Now.AddHours(1) };
-
+                PasswordHasher ph = new PasswordHasher();
+                account.Password = ph.HashPassword(account.Password);
+                
+                Session session = new Session() { Ip = HttpContext.Request.UserHostAddress, Account = account, StartTime = DateTime.UtcNow, EndTime = DateTime.UtcNow.AddHours(1) };
                 db.Sessions.Add(session);
                 db.Accounts.Add(account);
                 account.Sessions.Add(session);
+                
                 db.SaveChanges();
             }
             return RedirectToAction("Index");
         }
         public async Task<ActionResult> LogOut()
         {
-            var res = db.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress);
-            db.Sessions.RemoveRange(res);
+            var res = db.Sessions.Where(s => s.Ip == HttpContext.Request.UserHostAddress).Where(s=>s.EndTime>DateTime.UtcNow);
+            //db.Sessions.RemoveRange(res);
+            foreach (var s in res)
+            {
+                s.EndTime = DateTime.UtcNow;
+            }
             db.SaveChanges();
             return RedirectToAction("Index");
         }

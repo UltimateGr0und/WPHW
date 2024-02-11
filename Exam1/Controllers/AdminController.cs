@@ -9,6 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using Exam1.Models;
 using Exam1.Filters;
+using Microsoft.AspNet.Identity;
 
 namespace Exam1.Controllers
 {
@@ -56,6 +57,8 @@ namespace Exam1.Controllers
         {
             if (ModelState.IsValid)
             {
+                PasswordHasher ph = new PasswordHasher();
+                account.Password = ph.HashPassword(account.Password);
                 db.Accounts.Add(account);
                 await db.SaveChangesAsync();
                 return RedirectToAction("AccountIndex");
@@ -90,6 +93,8 @@ namespace Exam1.Controllers
         {
             if (ModelState.IsValid)
             {
+                PasswordHasher ph = new PasswordHasher();
+                account.Password = ph.HashPassword(account.Password);
                 db.Entry(account).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("AccountIndex");

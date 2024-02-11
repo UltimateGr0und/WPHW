@@ -25,10 +25,10 @@ namespace Exam1.Models
                 new Category("other")};
             context.Categories.AddRange(categories);
 
-            Account admin = new Account() { Username = "admin", Password="admin1",AccountType = AccountType.Admin };
+            Account admin = new Account() { Username = "admin",AccountType = AccountType.Admin, Password= "AJFeJIDWuSAPj3fPcnkWS3vEKIkMEfQXDZLJCnhxeNyVAf48CuL7wl9WManb6URdKw==" };
             context.Accounts.Add(admin);
 
-            Account account = new Account() { Username = "customer", Password = "customer1", AccountType = AccountType.Customer };
+            Account account = new Account() { Username = "customer", AccountType = AccountType.Customer, Password = "ABRirCv1Mqfp4mN5OUrofTavyH987k+xCGt8Ct/9KPnPMAoEbt+u7uuEaJyf9LEbWw==" };
             context.Accounts.Add(account);
 
             Random random = new Random();
