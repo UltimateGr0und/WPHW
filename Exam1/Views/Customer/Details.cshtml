@@ -15,6 +15,7 @@
             <p>@Model.Description</p>
         </div>
         <div class="col-md-5 col-sm-6">
+            <br/>
             <div class="row">
                 <img class="col-md-12 col-sm-12" src="@Model.Photo" alt="Alternate Text" />
                 <div class="col-md-12 col-sm-12">
@@ -26,16 +27,16 @@
                 {
                     <form class="col-md-10 col-sm-10" action="/customer/AddApplicant" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
-                        <input type="number" name="price" value="@Model.Price" />
-                        <input type="submit" value="make a bet" />
+                        <input type="number" name="price" value="@Model.Price" class="input" style="padding:4px"/>
+                        <input type="submit" value="make a bet" class="btn btn-primary"/>
                     </form>
                 }
                 else
                 {
                     <form class="col-md-10 col-sm-10" action="/customer/AddToBasket" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
-                        <input type="number" name="amount" value="1" />
-                        <input type="submit" value="buy" />
+                        <input type="number" name="amount" value="1" class="input" style="padding:4px"/>
+                        <input type="submit" value="buy" class="btn btn-primary"/>
                     </form>
                 }
             </div>
@@ -57,14 +58,16 @@
 @if (Model.Comments.Any())
 {
     <h3>All comments</h3>
-    <ul>
+    <div style="un">
         @foreach (var c in Model.Comments)
         {
-            <li>
-                <p>@c.Text</p>
-            </li>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @c.Text
+                </div>
+            </div>
         }
-    </ul>
+    </div>
 }
 else
 {

@@ -126,16 +126,16 @@ namespace Exam1.Controllers
         {
             Account account = RegistratedAccount();
             ViewBag.Categories = db.Categories.Select(p => p.Name).ToArray();
-            List<int> cRawValues = new List<int>();
+            List<int> cValues = new List<int>();
             foreach (var c in db.Categories)
             {
-                cRawValues.Add(account.ProductsToSell.Where(p=>p.Category==c.Name).Count());
+                cValues.Add(account.ProductsToSell.Where(p=>p.Category==c.Name).Count());
             }
-            List<int> cValues = new List<int>();
-            foreach (var v in cRawValues)
-            {
-                cValues.Add((int)((double)v / (double)cRawValues.Max() * 270.0));
-            }
+            //List<int> cValues = new List<int>();
+            //foreach (var v in cRawValues)
+            //{
+            //    cValues.Add((int)((double)v / (double)cRawValues.Max() * 270.0));
+            //}
             ViewBag.cValues= cValues.ToArray();
 
             return View(account);

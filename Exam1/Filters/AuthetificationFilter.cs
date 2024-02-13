@@ -21,7 +21,7 @@ namespace Exam1.Filters
             {
                 return db.Accounts.Where(
                 a => a.Sessions.Where(
-                    s => s.Ip == ip).Any()).Single();
+                    s => s.Ip == ip).Where(s => s.EndTime > DateTime.UtcNow).Any()).Single();
             }
             catch (Exception)
             {
