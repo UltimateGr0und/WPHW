@@ -41,12 +41,12 @@ namespace Exam1.Controllers
         }
         public async Task<ActionResult> Index(int Page=1, string Category = "all", string SearchRequest="")
         {
+            Account account = RegistratedAccount();
             SearchRequest = SearchRequest.ToLower().Replace(" ",String.Empty);
             var res = db.ProductInfos.Where(p=>p.Seller!=null).Where(p=>p.Category==Category||Category=="all").Where(product => product.Name.ToLower().Replace(" ", String.Empty).Contains(SearchRequest) ||
                 product.Description.ToLower().Replace(" ", String.Empty).Contains(SearchRequest) ||
                 product.Seller.Username.ToLower().Replace(" ", String.Empty).Contains(SearchRequest));
 
-            Account account = RegistratedAccount();
             PageInfo pageInfo = new PageInfo() { PageNumber = Page, PageSize=10, TotalItems=res.Count() };
             MarketModelView model = new MarketModelView() { User = account,Category=Category, PageInfo = pageInfo, Categories=db.Categories.Select(c=>c.Name).ToList() };
             model.products = res.OrderBy(p=>p.Id).Skip(10 * (Page-1)).Take(10).ToList();
@@ -56,7 +56,10 @@ namespace Exam1.Controllers
 
         public async Task<ActionResult> Details(int id)
         {
+            Account account = RegistratedAccount();
             ProductInfo product = db.ProductInfos.Find(id);
+            bool isOwnAccount = product.Seller == account?true:false;
+            ViewBag.IsOwnAccount = isOwnAccount;
             ViewBag.Comments = product.Comments.ToList();
             ViewBag.User = RegistratedAccount();
             return View(product);
@@ -64,7 +67,7 @@ namespace Exam1.Controllers
         
         [HttpPost]
         [AuthetificationFilter]
-        public async Task<ActionResult> AddApplicant(int id,int price)
+        public async Task<ActionResult> AddApplicant(int id, int price)
         {
             Account account = RegistratedAccount();
 
@@ -75,6 +78,10 @@ namespace Exam1.Controllers
                 if (!productInfo.Applicants.Contains(account))
                 {
                     productInfo.Applicants.Add(account);
+                }
+                productInfo.CurrentApplicant = account;
+                if (!account.AuctionLots.Contains(productInfo))
+                {
                     account.AuctionLots.Add(productInfo);
                 }
 
@@ -82,7 +89,7 @@ namespace Exam1.Controllers
             }
             return RedirectToAction("Index");
         }
-        
+
         [HttpPost]
         [AuthetificationFilter]
         public async Task<ActionResult> AddToBasket(int id,int amount)

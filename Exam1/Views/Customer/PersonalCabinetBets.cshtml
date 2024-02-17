@@ -29,10 +29,11 @@
                 <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
             </div>
             <div class="col-md-3 col-sm-3">
-                @if (product.Applicants.Last() == Model)
+                @if (product.CurrentApplicant == Model)
                 {
                     <h6>Your bet is relevant</h6>
                     <p>Current price @product.Price$</p>
+                    @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)
                 }
                 else
                 {

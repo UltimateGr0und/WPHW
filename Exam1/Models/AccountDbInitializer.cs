@@ -37,7 +37,8 @@ namespace Exam1.Models
                 string name = Lorem.Words(3);
                 string description = String.Join(",",Lorem.Paragraphs(10, 3, 3).ToArray());
                 string category = categories.ElementAt(random.Next(0,11)).Name;
-                ProductInfo productInfo = new ProductInfo { Name=name, Price=random.Next(1000), Description = description, TotalAmount = random.Next(1000), Category=category};
+                string isAuction = random.Next(0, 2)==1 ? "auction" : "product";
+                ProductInfo productInfo = new ProductInfo { Name=name, Price=random.Next(1000), Description = description, TotalAmount = random.Next(1000), Category=category, IsAuction=isAuction};
                 context.ProductInfos.Add(productInfo);
 
                 account.ProductsToSell.Add(productInfo);

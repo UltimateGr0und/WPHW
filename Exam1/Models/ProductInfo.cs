@@ -33,6 +33,7 @@ namespace Exam1.Models
         public int TotalAmount { get; set; }
         public string IsAuction { get; set; } = "product";
         public virtual ICollection<Account> Applicants { get; set; }
+        public virtual Account CurrentApplicant { get; set; }
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
         public virtual ICollection<Comment> Comments { get; set; }  =new List<Comment>();
         public virtual Account Seller { get; set; }

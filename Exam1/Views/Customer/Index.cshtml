@@ -57,15 +57,20 @@
                     {
                         <div class="row">
                             <div class="col-md-6 col-sm-7">
-                                <h4>@product.Name</h4>
+                                <h4>
+                                    @product.Name &nbsp;@if (product.IsAuction=="auction")
+                                    {
+                                        <span class="label label-primary">Auction</span>
+                                    }
+                                </h4>
                                 <p>@(product.Description.Length > 150 ? product.Description.Substring(0, 150) + "..." : product.Description)</p>
                             </div>
                             <div class="col-md-3 col-sm-3">
                                 <ul style="list-style-type:none;">
-                                    <li>@product.Price$</li>
-                                    <li>@product.Seller.Username</li>
+                                    <li>Price: @product.Price$</li>
+                                    <li>Seller: @product.Seller.Username</li>
                                     <li>@product.TotalAmount left</li>
-                                    @Html.ActionLink("buy", "Details", "Customer", new { product.Id }, new { @class = "btn btn-default" })
+                                    @Html.ActionLink("buy", "Details", "Customer", new { product.Id }, new { @class = "btn btn-primary" })
                                 </ul>
                             </div>
                             <img class="col-md-3 col-sm-2 rounded d-inline-block" src="@product.Photo" alt="Alternate Text" />

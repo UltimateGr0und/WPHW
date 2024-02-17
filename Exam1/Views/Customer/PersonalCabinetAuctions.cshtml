@@ -34,8 +34,15 @@
                 <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
             </div>
             <div class="col-md-3 col-sm-3">
-                <p>Current price @product.Price</p>
-                @Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, new {@class="btn btn-danger"})
+                @if (product.Applicants.Any())
+                {
+                    <p>Current price @product.Price</p>
+                }
+                else
+                {
+                    <p>No applicants</p>
+                }
+                @Html.ActionLink("Finish", "FinishAuction", "Customer", new { product.Id }, new { @class = "btn btn-danger" })
                 @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)
                 @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, null)
             </div>

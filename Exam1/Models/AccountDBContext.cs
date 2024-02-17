@@ -15,5 +15,13 @@ namespace Exam1.Models
         public DbSet<ProductInfo> ProductInfos { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Comment> Comments { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.AuctionLots)
+                .WithMany(b => b.Applicants);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

@@ -68,11 +68,13 @@ namespace Exam1.Controllers
             }
             else if (accounts.Count == 0)
             {
+                TempData["message"] = "please complete registration";
                 return RedirectToAction("SignIn");
             }
             else
             {
                 FixRegistration();
+                TempData["message"] = "please complete registration";
                 return RedirectToAction("SignIn");
             }
         }
@@ -162,7 +164,7 @@ namespace Exam1.Controllers
                 s.EndTime = DateTime.UtcNow;
             }
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index","Customer");
         }
     }
 }

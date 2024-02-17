@@ -11,7 +11,12 @@
 <div class="container">
     <div class="row">
         <div class="col-md-7 col-sm-6">
-            <h2>@Model.Name @(Model.IsAuction=="Auction"?"(Auction)":"")</h2>
+            <h2>
+                @Model.Name @(Model.IsAuction=="Auction"?"(Auction)":"") &nbsp;@if (Model.IsAuction == "auction")
+                        {
+                            <span class="label label-primary">Auction</span>
+                        }
+                    </h2>
             <p>@Model.Description</p>
         </div>
         <div class="col-md-5 col-sm-6">
@@ -23,11 +28,18 @@
                     <h4>Seller @Model.Seller.Username</h4>
                     <h4>@Model.TotalAmount left</h4>
                 </div>
-                @if (Model.IsAuction == "auction")
+                @if (ViewBag.IsOwnAccount)
                 {
+                    <div class="alert alert-danger">
+                        You cant buy your own product
+                    </div>
+                }
+                else if (Model.IsAuction == "auction")
+                {
+                    double minPrice = Model.Price + 1;
                     <form class="col-md-10 col-sm-10" action="/customer/AddApplicant" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
-                        <input type="number" name="price" value="@Model.Price" class="input" style="padding:4px"/>
+                        <input type="number" min="@minPrice" name="price" value="@minPrice" class="input" style="padding:4px"/>
                         <input type="submit" value="make a bet" class="btn btn-primary"/>
                     </form>
                 }
@@ -35,7 +47,7 @@
                 {
                     <form class="col-md-10 col-sm-10" action="/customer/AddToBasket" method="post">
                         <input type="hidden" value="@Model.Id" name="id" />
-                        <input type="number" name="amount" value="1" class="input" style="padding:4px"/>
+                        <input type="number" min="1" max="@Model.TotalAmount" name="amount" value="1" class="input" style="padding:4px"/>
                         <input type="submit" value="buy" class="btn btn-primary"/>
                     </form>
                 }
