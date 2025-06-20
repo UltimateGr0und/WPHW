@@ -1,0 +1,92 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "PersonalCabinet";
+}
+
+<h2>Personal Cabinet</h2>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Products</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Auctions", "PersonalCabinetAuctions")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Bets", "PersonalCabinetBets")</li>
+    </ol>
+</nav>
+
+<br />
+
+<h3 class="text-center">Your products by categories statistic</h3>
+<div class="card chart-container" style="margin-left:10vh; margin-right:10vh">
+    <canvas id="chart"></canvas>
+</div>
+
+<hr />
+
+
+<div style="display:flex; justify-content: space-between">
+    <h4 class="">Your products</h4>
+    @Html.ActionLink("Add new product", "CreateProductInfo", null, new { @class = "btn btn-primary" })
+</div>
+
+<br />
+
+@if (!Model.ProductsToSell.Where(p => p.IsAuction != "auction").Any())
+{
+    <div class="alert alert-info" role="alert">You dont have any products to sell yet</div>
+}
+<div class="container">
+    @foreach (var product in Model.ProductsToSell.Where(p => p.IsAuction != "auction"))
+    {
+        <div class="row">
+            <img class="col-md-2 col-sm-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7 col-sm-7">
+                <h5>@product.Name</h5>
+                <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                <p>Price @product.Price</p>
+                @Html.ActionLink("Update", "UpdateProductInfo", "Customer", new { product.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Change photo", "AddProductPhoto", "Customer", new { product.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Delete", "DeleteProductInfo", "Customer", new { product.Id }, new { @class = "btn btn-danger" })
+            </div>
+        </div>
+        <hr />
+    }
+</div>
+
+<script>
+
+    var Labels = [];
+    var values = [];
+
+    @for (int i = 0; i < 11; i++)
+    {
+
+        @:Labels.push("@ViewBag.Categories[i]");
+        @:values.push("@ViewBag.cValues[i].ToString()");
+    }
+
+    const ctx = document.getElementById("chart").getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: Labels,
+            datasets: [{
+                label: 'Products amount',
+                backgroundColor: 'rgba(161, 198, 247, 1)',
+                borderColor: 'rgb(47, 128, 237)',
+                data:values,
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                    }
+                }]
+            }
+        },
+    });
+</script>

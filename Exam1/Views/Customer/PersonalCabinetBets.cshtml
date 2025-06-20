@@ -1,0 +1,49 @@
+﻿@model Exam1.Models.Account
+
+@{
+    ViewBag.Title = "PersonalCabinetBets";
+}
+
+<h2>Personal Cabinet</h2>
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">@Html.ActionLink("Products", "PersonalCabinet")</li>
+        <li class="breadcrumb-item">@Html.ActionLink("Auctions", "PersonalCabinetAuctions")</li>
+        <li class="breadcrumb-item active" aria-current="page">Bets</li>
+    </ol>
+</nav>
+
+<h3>Your bets</h3>
+@if (!Model.AuctionLots.Any())
+{
+    <div class="alert alert-info" role="alert">You dont have any bets yet</div>
+}
+<div class="container">
+    @foreach (var product in Model.AuctionLots)
+    {
+        <div class="row">
+            <img class="col-md-2 col-sm-2 h-100 d-inline-block" src="@product.Photo" alt="Alternate Text" />
+            <div class="col-md-7 col-sm-7">
+                <h5>@product.Name</h5>
+                <p>@(product.Description.Length>150?product.Description.Substring(0,150)+"...":product.Description)</p>
+            </div>
+            <div class="col-md-3 col-sm-3">
+                @if (product.CurrentApplicant == Model)
+                {
+                    <h6>Your bet is relevant</h6>
+                    <p>Current price @product.Price$</p>
+                    @Html.ActionLink("Details", "Details", "Customer", new { product.Id }, null)
+                }
+                else
+                {
+                    <h6>Your bet is irrelevant</h6>
+                    <p>Current price @product.Price$</p>
+                    @Html.ActionLink("Raise the bet", "Details", "Customer", new { product.Id }, null)
+                }
+            </div>
+        </div>
+        <hr />
+    }
+</div>
+

@@ -1,0 +1,18 @@
+﻿@model Exam1.Models.ProductInfo
+
+@{
+    ViewBag.Title = "AddProductPhoto";
+}
+
+<h2>Choose photo to upload</h2>
+
+@using (Html.BeginForm("AddProductPhoto", "Customer", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" name="id" value="@Model.Id" />
+    <input type="file" required name="file" />
+    <br>
+    <input type="submit" value="Upload" />
+}
+

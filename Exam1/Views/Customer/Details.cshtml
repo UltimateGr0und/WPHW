@@ -1,0 +1,93 @@
+﻿@model Exam1.Models.ProductInfo
+
+@{
+    if (ViewBag.User == null)
+    {
+        Layout = "~/Views/Shared/Unauthorized.cshtml";
+    }
+    ViewBag.Title = "Details";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-7 col-sm-6">
+            <h2>
+                @Model.Name @(Model.IsAuction=="Auction"?"(Auction)":"") &nbsp;@if (Model.IsAuction == "auction")
+                        {
+                            <span class="label label-primary">Auction</span>
+                        }
+                    </h2>
+            <p>@Model.Description</p>
+        </div>
+        <div class="col-md-5 col-sm-6">
+            <br/>
+            <div class="row">
+                <img class="col-md-12 col-sm-12" src="@Model.Photo" alt="Alternate Text" />
+                <div class="col-md-12 col-sm-12">
+                    <h4>Price @Model.Price$</h4>
+                    <h4>Seller @Model.Seller.Username</h4>
+                    <h4>@Model.TotalAmount left</h4>
+                </div>
+                @if (ViewBag.IsOwnAccount)
+                {
+                    <div class="alert alert-danger">
+                        You cant buy your own product
+                    </div>
+                }
+                else if (Model.IsAuction == "auction")
+                {
+                    double minPrice = Model.Price + 1;
+                    <form class="col-md-10 col-sm-10" action="/customer/AddApplicant" method="post">
+                        <input type="hidden" value="@Model.Id" name="id" />
+                        <input type="number" min="@minPrice" name="price" value="@minPrice" class="input" style="padding:4px"/>
+                        <input type="submit" value="make a bet" class="btn btn-primary"/>
+                    </form>
+                }
+                else
+                {
+                    <form class="col-md-10 col-sm-10" action="/customer/AddToBasket" method="post">
+                        <input type="hidden" value="@Model.Id" name="id" />
+                        <input type="number" min="1" max="@Model.TotalAmount" name="amount" value="1" class="input" style="padding:4px"/>
+                        <input type="submit" value="buy" class="btn btn-primary"/>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<br />
+
+<h3>Write comment</h3>
+<form action="/customer/AddComment" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" value="@Model.Id" name="id" />
+    <input type="text" name="text" value="" />
+    <input type="submit" value="send" />
+</form>
+
+
+@if (Model.Comments.Any())
+{
+    <h3>All comments</h3>
+    <div style="un">
+        @foreach (var c in Model.Comments)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @c.Text
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <h4>There arent any comments yet</h4>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
